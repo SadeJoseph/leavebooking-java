@@ -13,7 +13,7 @@ public final class DomainAssertions {
     }
 
     public static void argumentNotEmpty(String value, String errorMessage) {
-        if(value == null) {
+        if (value == null || value.trim().isEmpty()){
             throw new IllegalArgumentException(errorMessage);
         }
     }
