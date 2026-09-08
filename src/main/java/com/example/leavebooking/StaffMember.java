@@ -3,7 +3,7 @@ package com.example.leavebooking;
 import lombok.ToString;
 
 @ToString(callSuper = true)
-public class StaffMember extends Entity<StaffMember> {
+public class StaffMember extends Entity<StaffMember> implements AggregateRoot {
 
     public static final String FULL_NAME_CANNOT_BE_NULL = "Full name cannot be null";
     public static final String EMAIL_ADDRESS_CANNOT_BE_NULL = "Email address cannot be null";
