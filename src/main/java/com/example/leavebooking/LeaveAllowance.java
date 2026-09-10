@@ -49,7 +49,7 @@ public class LeaveAllowance extends Entity<LeaveAllowance> implements AggregateR
         this.managerId = managerId;
         this.yearlyEntitlement = yearlyEntitlement;
 
-        this.remainingBalance = yearlyEntitlement; 
+        this.remainingBalance = yearlyEntitlement;
     }
 
     public Identity<LeaveAllowance> id() {
@@ -121,7 +121,7 @@ public class LeaveAllowance extends Entity<LeaveAllowance> implements AggregateR
         remainingBalance += days;
     }
 
-    public void amendYearlyEntitlement(int newEntitlement) { // admin can amend the staff memebers yealy entitlement 
+    public void amendYearlyEntitlement(int newEntitlement) { // admin can amend the staff memebers yealy entitlement
         if (newEntitlement <= 0) {
             throw new IllegalArgumentException(ENTITLEMENT_MUST_BE_POSITIVE);
         }
