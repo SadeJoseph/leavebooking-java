@@ -3,6 +3,7 @@ package com.example.leavebooking.staffmanagement.application;
 import com.example.leavebooking.staffmanagement.application.dto.StaffMemberDTO;
 import com.example.leavebooking.staffmanagement.application.mappers.StaffMemberJpaToDTOMapper;
 import com.example.leavebooking.staffmanagement.infrastructure.repositories.StaffMemberRepository;
+import com.example.leavebooking.staffmanagement.application.exceptions.StaffMemberNotFoundException;
 
 import lombok.AllArgsConstructor;
 
@@ -27,7 +28,15 @@ public class StaffMemberQueryHandler {
             .findAll()
             .spliterator(),
             false)
-        .map(StaffMemberJpaToDTOMapper::toStaffMemberDTO) // means every JPA entity is converted to a DTO before leaves application layer 
+        .map(StaffMemberJpaToDTOMapper::toStaffMemberDTO) // means every JPA entity is converted to a DTO before leaves pplication layer
         .collect(toList());
+  }
+
+  public StaffMemberDTO findStaffMemberById(String staffId) {
+
+    return staffMemberRepository
+        .findById(staffId)
+        .map(StaffMemberJpaToDTOMapper::toStaffMemberDTO)
+        .orElseThrow(() -> new StaffMemberNotFoundException(staffId));
   }
 }

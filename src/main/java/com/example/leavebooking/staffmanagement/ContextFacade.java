@@ -20,4 +20,8 @@ public class ContextFacade {
   public Iterable<StaffMemberDTO> findAllStaffMembers() {
     return staffMemberQueryHandler.findAllStaffMembers();
   }
+
+  public StaffMemberDTO findStaffMemberById(String staffId) {
+    return staffMemberQueryHandler.findStaffMemberById(staffId);
+}
 }
