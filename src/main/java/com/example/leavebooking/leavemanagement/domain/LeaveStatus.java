@@ -1,11 +1,15 @@
-package com.example.leavebooking;
+package com.example.leavebooking.leavemanagement.domain;
 
-public enum LeaveType {
-    ANNUAL_LEAVE("Annual leave");
+public enum LeaveStatus {
+
+    PENDING("Awaiting approval"),
+    APPROVED("Leave request approved"),
+    REJECTED("Leave request rejected"),
+    CANCELLED("Leave request cancelled");
 
     private final String description;
 
-    LeaveType(String description) {
+    LeaveStatus(String description) {
         if (description == null) {
             throw new IllegalArgumentException("Description cannot be null");
         }

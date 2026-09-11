@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.example.leavebooking.EmailAddress;
+import com.example.leavebooking.staffmanagement.domain.EmailAddress;
 
 import static org.junit.jupiter.api.Assertions.*;
 

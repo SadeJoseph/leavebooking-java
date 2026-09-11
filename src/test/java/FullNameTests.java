@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.example.leavebooking.FullName;
+import com.example.leavebooking.common.FullName;
 
 import java.util.Arrays;
 

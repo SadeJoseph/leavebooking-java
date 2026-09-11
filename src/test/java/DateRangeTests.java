@@ -1,7 +1,8 @@
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.example.leavebooking.DateRange;
+import com.example.leavebooking.leavemanagement.domain.DateRange;
+
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 

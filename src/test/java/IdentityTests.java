@@ -1,7 +1,8 @@
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
 
-import com.example.leavebooking.Identity;
+import com.example.leavebooking.common.Identity;
+
+import org.junit.jupiter.api.DisplayName;
 
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;

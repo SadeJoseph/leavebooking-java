@@ -1,4 +1,4 @@
-package com.example.leavebooking;
+package com.example.leavebooking.common;
 
 import lombok.EqualsAndHashCode;
 
@@ -12,7 +12,7 @@ public abstract class Entity<T> {
     protected final Identity<T> id;
 
     public Entity(Identity<T> id) {
-        if(id == null) {
+        if (id == null) {
             throw new IllegalArgumentException(IDENTITY_CANNOT_BE_NULL);
         }
         this.id = id;

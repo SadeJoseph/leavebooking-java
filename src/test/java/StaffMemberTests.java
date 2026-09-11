@@ -2,10 +2,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.example.leavebooking.EmailAddress;
-import com.example.leavebooking.FullName;
-import com.example.leavebooking.Identity;
-import com.example.leavebooking.StaffMember;
+import com.example.leavebooking.common.FullName;
+import com.example.leavebooking.common.Identity;
+import com.example.leavebooking.staffmanagement.domain.EmailAddress;
+import com.example.leavebooking.staffmanagement.domain.StaffMember;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -2,12 +2,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.example.leavebooking.DateRange;
-import com.example.leavebooking.Identity;
-import com.example.leavebooking.LeaveRequest;
-import com.example.leavebooking.LeaveStatus;
-import com.example.leavebooking.LeaveType;
-import com.example.leavebooking.StaffMember;
+import com.example.leavebooking.common.Identity;
+import com.example.leavebooking.leavemanagement.domain.DateRange;
+import com.example.leavebooking.leavemanagement.domain.LeaveRequest;
+import com.example.leavebooking.leavemanagement.domain.LeaveStatus;
+import com.example.leavebooking.leavemanagement.domain.LeaveType;
+import com.example.leavebooking.staffmanagement.domain.StaffMember;
 
 import java.time.LocalDate;
 

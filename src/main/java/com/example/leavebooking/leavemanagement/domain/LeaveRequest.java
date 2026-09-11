@@ -1,7 +1,13 @@
-package com.example.leavebooking;
+package com.example.leavebooking.leavemanagement.domain;
 
 import lombok.ToString;
-import static com.example.leavebooking.DomainAssertions.argumentNotEmpty;
+
+import static com.example.leavebooking.common.DomainAssertions.argumentNotEmpty;
+
+import com.example.leavebooking.common.AggregateRoot;
+import com.example.leavebooking.common.Entity;
+import com.example.leavebooking.common.Identity;
+import com.example.leavebooking.staffmanagement.domain.StaffMember;
 
 @ToString(callSuper = true)
 public class LeaveRequest extends Entity<LeaveRequest> implements AggregateRoot{
