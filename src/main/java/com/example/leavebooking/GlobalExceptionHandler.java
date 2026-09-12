@@ -59,7 +59,6 @@ public class GlobalExceptionHandler {
           .collect(
               Collectors.toMap(
                   FieldError::getField,
-
                   error -> Objects.requireNonNullElse(
                       error.getDefaultMessage(),
                       "Invalid value"),
@@ -87,16 +86,12 @@ public class GlobalExceptionHandler {
     }
 
     else if (ex instanceof DataIntegrityViolationException) {
-
       status = HttpStatus.BAD_REQUEST;
-
       message = "A duplicate record already exists";
     }
 
     else if (ex instanceof IllegalArgumentException) {
-
       status = HttpStatus.BAD_REQUEST;
-
       message = ex.getMessage();
     }
 

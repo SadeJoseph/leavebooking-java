@@ -7,9 +7,7 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Component;
 
-// Public entry point into the Staff Management bounded context.
-// Other parts of the application communicate through this façad rather than directly accessing internal application classes.
-@Component
+@Component("staffManagementContextFacade")
 @AllArgsConstructor
 public class ContextFacade {
 
