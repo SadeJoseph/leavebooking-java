@@ -5,8 +5,11 @@ import com.example.leavebooking.leavemanagement.infrastructure.entities.LeaveReq
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-// Repository providing database access for LeaveRequestJpa entities.
+import java.util.List;
+
 @Repository
 public interface LeaveRequestRepository
         extends CrudRepository<LeaveRequestJpa, String> {
+ // This returns every leave request belonging to one staff member.
+    List<LeaveRequestJpa> findByStaffId(String staffId);
 }

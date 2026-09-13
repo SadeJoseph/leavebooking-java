@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,5 +32,19 @@ public class LeaveController {
   @ResponseStatus(HttpStatus.OK)
   public Iterable<LeaveAllowanceDTO> getAllLeaveAllowances() {
     return facade.findAllLeaveAllowances();
+  }
+
+  @GetMapping("/requests/staff/{staff_id}")
+  @ResponseStatus(HttpStatus.OK)
+  public Iterable<LeaveRequestDTO> getLeaveRequestsByStaffId(
+      @PathVariable String staff_id) {
+    return facade.findLeaveRequestsByStaffId(staff_id);
+  }
+
+  @GetMapping("/allowances/staff/{staff_id}")
+  @ResponseStatus(HttpStatus.OK)
+  public LeaveAllowanceDTO getLeaveAllowanceByStaffId(
+      @PathVariable String staff_id) {
+    return facade.findLeaveAllowanceByStaffId(staff_id);
   }
 }
