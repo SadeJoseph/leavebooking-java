@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.leavebooking.leavemanagement.ui.commands.AddLeaveRequestCommand;
+import com.example.leavebooking.leavemanagement.ui.commands.CancelLeaveRequestCommand;
 
 @RequestMapping("/leave")
 @RestController
@@ -65,5 +66,12 @@ public class LeaveController {
   public void addLeaveRequest(
       @RequestBody AddLeaveRequestCommand command) {
     facade.addLeaveRequest(command);
+  }
+
+  @PostMapping("/requests/cancel")
+  @ResponseStatus(HttpStatus.OK)
+  public void cancelLeaveRequest(
+      @RequestBody CancelLeaveRequestCommand command) {
+    facade.cancelLeaveRequest(command);
   }
 }

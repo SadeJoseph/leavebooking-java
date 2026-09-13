@@ -7,6 +7,9 @@ import com.example.leavebooking.leavemanagement.domain.LeaveType;
 import com.example.leavebooking.leavemanagement.infrastructure.repositories.LeaveRequestRepository;
 import com.example.leavebooking.leavemanagement.ui.commands.AddLeaveRequestCommand;
 import com.example.leavebooking.staffmanagement.domain.StaffMember;
+import com.example.leavebooking.leavemanagement.application.exceptions.LeaveRequestNotFoundException;
+import com.example.leavebooking.leavemanagement.application.mappers.LeaveRequestJpaToDomainMapper;
+import com.example.leavebooking.leavemanagement.ui.commands.CancelLeaveRequestCommand;
 
 import lombok.AllArgsConstructor;
 
@@ -25,7 +28,8 @@ public class LeaveApplicationService {
     // Generate the identity for the new LeaveRequest aggregate
     Identity<LeaveRequest> newLeaveRequestId = Identity.generateId();
 
-    // Convert staff id supplied by the command into the identity type used by the domain aggregate.
+    // Convert staff id supplied by the command into the identity type used by the
+    // domain aggregate.
     Identity<StaffMember> staffId = Identity.of(command.staffId());
 
     // Construct the domain aggregate first
@@ -40,5 +44,21 @@ public class LeaveApplicationService {
     leaveRequestRepository.save(
         LeaveRequestDomainToJpaMapper.map(
             newLeaveRequest));
+  }
+
+  // Cancel an existing leave request.
+  public void cancelLeaveRequest(CancelLeaveRequestCommand command) {
+
+    LeaveRequest leaveRequest = leaveRequestRepository
+        .findById(command.leaveRequestId())
+        .map(LeaveRequestJpaToDomainMapper::map)
+        .orElseThrow(() -> new LeaveRequestNotFoundException(
+            command.leaveRequestId()));
+
+    leaveRequest.cancelLeaveRequest();
+
+    // Map the updated aggregate back to persistence and save it.
+    leaveRequestRepository.save(
+        LeaveRequestDomainToJpaMapper.map(leaveRequest));
   }
 }

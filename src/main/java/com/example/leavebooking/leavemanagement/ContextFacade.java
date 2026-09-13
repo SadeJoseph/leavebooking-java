@@ -5,6 +5,8 @@ import com.example.leavebooking.leavemanagement.application.LeaveQueryHandler;
 import com.example.leavebooking.leavemanagement.application.dto.LeaveAllowanceDTO;
 import com.example.leavebooking.leavemanagement.application.dto.LeaveRequestDTO;
 import com.example.leavebooking.leavemanagement.ui.commands.AddLeaveRequestCommand;
+import com.example.leavebooking.leavemanagement.ui.commands.CancelLeaveRequestCommand;
+
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -46,4 +48,9 @@ public class ContextFacade {
   public void addLeaveRequest(AddLeaveRequestCommand command) {
     leaveApplicationService.addLeaveRequest(command);
   }
+
+  // Command to cancel an existing leave request.
+public void cancelLeaveRequest(CancelLeaveRequestCommand command) {
+    leaveApplicationService.cancelLeaveRequest(command);
+}
 }
