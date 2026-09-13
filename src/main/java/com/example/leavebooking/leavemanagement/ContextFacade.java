@@ -1,9 +1,10 @@
 package com.example.leavebooking.leavemanagement;
 
+import com.example.leavebooking.leavemanagement.application.LeaveApplicationService;
 import com.example.leavebooking.leavemanagement.application.LeaveQueryHandler;
 import com.example.leavebooking.leavemanagement.application.dto.LeaveAllowanceDTO;
 import com.example.leavebooking.leavemanagement.application.dto.LeaveRequestDTO;
-
+import com.example.leavebooking.leavemanagement.ui.commands.AddLeaveRequestCommand;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -37,5 +38,12 @@ public class ContextFacade {
   public Iterable<LeaveRequestDTO> findPendingLeaveRequestsByManagerId(
       String managerId) {
     return leaveQueryHandler.findPendingLeaveRequestsByManagerId(managerId);
+  }
+
+  private final LeaveApplicationService leaveApplicationService;
+
+  // Command to create a new annual leave request.
+  public void addLeaveRequest(AddLeaveRequestCommand command) {
+    leaveApplicationService.addLeaveRequest(command);
   }
 }

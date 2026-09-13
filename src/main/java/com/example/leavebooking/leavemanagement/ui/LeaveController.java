@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import com.example.leavebooking.leavemanagement.ui.commands.AddLeaveRequestCommand;
 
 @RequestMapping("/leave")
 @RestController
@@ -53,5 +57,13 @@ public class LeaveController {
   public Iterable<LeaveRequestDTO> getPendingLeaveRequestsByManagerId(
       @PathVariable String manager_id) {
     return facade.findPendingLeaveRequestsByManagerId(manager_id);
+  }
+
+  // Create a new annual leave request.
+  @PostMapping("/requests")
+  @ResponseStatus(HttpStatus.CREATED)
+  public void addLeaveRequest(
+      @RequestBody AddLeaveRequestCommand command) {
+    facade.addLeaveRequest(command);
   }
 }
