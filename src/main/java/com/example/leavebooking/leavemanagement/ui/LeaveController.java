@@ -47,4 +47,11 @@ public class LeaveController {
       @PathVariable String staff_id) {
     return facade.findLeaveAllowanceByStaffId(staff_id);
   }
+
+  @GetMapping("/requests/manager/{manager_id}/pending")
+  @ResponseStatus(HttpStatus.OK)
+  public Iterable<LeaveRequestDTO> getPendingLeaveRequestsByManagerId(
+      @PathVariable String manager_id) {
+    return facade.findPendingLeaveRequestsByManagerId(manager_id);
+  }
 }

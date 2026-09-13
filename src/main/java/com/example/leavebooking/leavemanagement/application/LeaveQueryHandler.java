@@ -7,14 +7,17 @@ import com.example.leavebooking.leavemanagement.application.mappers.LeaveRequest
 import com.example.leavebooking.leavemanagement.infrastructure.repositories.LeaveAllowanceRepository;
 import com.example.leavebooking.leavemanagement.infrastructure.repositories.LeaveRequestRepository;
 import com.example.leavebooking.leavemanagement.application.exceptions.LeaveAllowanceNotFoundException;
+import com.example.leavebooking.leavemanagement.domain.LeaveStatus;
 
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
 import java.util.stream.StreamSupport;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 @AllArgsConstructor
 @Service
@@ -65,5 +68,26 @@ public class LeaveQueryHandler {
         .findByStaffId(staffId)
         .map(LeaveAllowanceJpaToDTOMapper::toLeaveAllowanceDTO)
         .orElseThrow(() -> new LeaveAllowanceNotFoundException(staffId));
+  }
+
+  // Retrieve pending leave requests for staff assigned to one manager.
+  public Iterable<LeaveRequestDTO> findPendingLeaveRequestsByManagerId(
+      String managerId) {
+
+    // find all staff members assigned to this manager.
+    Set<String> managedStaffIds = leaveAllowanceRepository
+        .findByManagerId(managerId)
+        .stream()
+        .map(leaveAllowance -> leaveAllowance.getStaffId())
+        .collect(toSet());
+
+    // Then retrieve pending leave requests and keep only those belongin to staff managed by this manager.
+    return leaveRequestRepository
+        .findByLeaveStatus(LeaveStatus.PENDING.ordinal())
+        .stream()
+        .filter(leaveRequest -> managedStaffIds.contains(
+            leaveRequest.getStaffId()))
+        .map(LeaveRequestJpaToDTOMapper::toLeaveRequestDTO)
+        .collect(toList());
   }
 }

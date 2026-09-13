@@ -12,4 +12,6 @@ public interface LeaveRequestRepository
         extends CrudRepository<LeaveRequestJpa, String> {
  // This returns every leave request belonging to one staff member.
     List<LeaveRequestJpa> findByStaffId(String staffId);
+
+    List<LeaveRequestJpa> findByLeaveStatus(int leaveStatus);
 }

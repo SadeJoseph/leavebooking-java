@@ -12,15 +12,18 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class ContextFacade {
   private final LeaveQueryHandler leaveQueryHandler;
-// Return all leave requests
+
+  // Return all leave requests
   public Iterable<LeaveRequestDTO> findAllLeaveRequests() {
     return leaveQueryHandler.findAllLeaveRequests();
   }
-// Retrieve all leave allowances and convert each entity into a DTO.
+
+  // Retrieve all leave allowances and convert each entity into a DTO.
   public Iterable<LeaveAllowanceDTO> findAllLeaveAllowances() {
     return leaveQueryHandler.findAllLeaveAllowances();
   }
-// Retrieve all leave requests belonging to one staff member.
+
+  // Retrieve all leave requests belonging to one staff member.
   public Iterable<LeaveRequestDTO> findLeaveRequestsByStaffId(String staffId) {
     return leaveQueryHandler.findLeaveRequestsByStaffId(staffId);
   }
@@ -28,5 +31,11 @@ public class ContextFacade {
   // the leave allowance belonging to one staff member.
   public LeaveAllowanceDTO findLeaveAllowanceByStaffId(String staffId) {
     return leaveQueryHandler.findLeaveAllowanceByStaffId(staffId);
+  }
+
+  // Query pending leave requests for staff assigned to one manager.
+  public Iterable<LeaveRequestDTO> findPendingLeaveRequestsByManagerId(
+      String managerId) {
+    return leaveQueryHandler.findPendingLeaveRequestsByManagerId(managerId);
   }
 }
