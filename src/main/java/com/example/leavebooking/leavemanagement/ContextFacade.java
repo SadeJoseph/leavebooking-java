@@ -6,6 +6,8 @@ import com.example.leavebooking.leavemanagement.application.dto.LeaveAllowanceDT
 import com.example.leavebooking.leavemanagement.application.dto.LeaveRequestDTO;
 import com.example.leavebooking.leavemanagement.ui.commands.AddLeaveRequestCommand;
 import com.example.leavebooking.leavemanagement.ui.commands.CancelLeaveRequestCommand;
+import com.example.leavebooking.leavemanagement.ui.commands.ApproveLeaveRequestCommand;
+import com.example.leavebooking.leavemanagement.ui.commands.RejectLeaveRequestCommand;
 
 import lombok.AllArgsConstructor;
 
@@ -50,7 +52,15 @@ public class ContextFacade {
   }
 
   // Command to cancel an existing leave request.
-public void cancelLeaveRequest(CancelLeaveRequestCommand command) {
+  public void cancelLeaveRequest(CancelLeaveRequestCommand command) {
     leaveApplicationService.cancelLeaveRequest(command);
-}
+  }
+// approve
+  public void approveLeaveRequest(ApproveLeaveRequestCommand command) {
+    leaveApplicationService.approveLeaveRequest(command);
+  }
+// reject
+  public void rejectLeaveRequest(RejectLeaveRequestCommand command) {
+    leaveApplicationService.rejectLeaveRequest(command);
+  }
 }

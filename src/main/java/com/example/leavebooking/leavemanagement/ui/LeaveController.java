@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.leavebooking.leavemanagement.ui.commands.AddLeaveRequestCommand;
+import com.example.leavebooking.leavemanagement.ui.commands.ApproveLeaveRequestCommand;
 import com.example.leavebooking.leavemanagement.ui.commands.CancelLeaveRequestCommand;
+import com.example.leavebooking.leavemanagement.ui.commands.RejectLeaveRequestCommand;
 
 @RequestMapping("/leave")
 @RestController
@@ -73,5 +75,19 @@ public class LeaveController {
   public void cancelLeaveRequest(
       @RequestBody CancelLeaveRequestCommand command) {
     facade.cancelLeaveRequest(command);
+  }
+
+  @PostMapping("/requests/approve")
+  @ResponseStatus(HttpStatus.OK)
+  public void approveLeaveRequest(
+      @RequestBody ApproveLeaveRequestCommand command) {
+    facade.approveLeaveRequest(command);
+  }
+
+  @PostMapping("/requests/reject")
+  @ResponseStatus(HttpStatus.OK)
+  public void rejectLeaveRequest(
+      @RequestBody RejectLeaveRequestCommand command) {
+    facade.rejectLeaveRequest(command);
   }
 }
