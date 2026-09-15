@@ -29,10 +29,27 @@ public class LeaveAllowanceApplicationService {
     LeaveAllowance leaveAllowance = LeaveAllowanceJpaToDomainMapper.map(
         leaveAllowanceJpa);
 
-
     leaveAllowance.useLeave(days);
 
-   
+    leaveAllowanceRepository.save(
+        LeaveAllowanceDomainToJpaMapper.map(
+            leaveAllowance));
+  }
+
+  @Transactional
+  public void restoreLeave(String staffId, int days) { // restore previously used leave days when an approved leave request is cancelled.
+
+    // Find  allowance belonging to the staff member.
+    LeaveAllowanceJpa leaveAllowanceJpa = leaveAllowanceRepository.findByStaffId(staffId)
+        .orElseThrow(() -> new LeaveAllowanceNotFoundException(staffId));
+
+    LeaveAllowance leaveAllowance = LeaveAllowanceJpaToDomainMapper.map(
+        leaveAllowanceJpa);
+
+    // Domain aggregate restores the previously used leave days.
+    leaveAllowance.restoreLeave(days);
+
+    // Persist the updated allowance.
     leaveAllowanceRepository.save(
         LeaveAllowanceDomainToJpaMapper.map(
             leaveAllowance));

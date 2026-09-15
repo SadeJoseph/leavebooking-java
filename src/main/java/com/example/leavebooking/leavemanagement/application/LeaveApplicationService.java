@@ -86,9 +86,18 @@ public class LeaveApplicationService {
 
     leaveRequest.cancelLeaveRequest();
 
-    // Map the updated aggregate back to persistence and save it.
+    // save it.
     leaveRequestRepository.save(
         LeaveRequestDomainToJpaMapper.map(leaveRequest));
+    // notify
+    if (leaveRequest.domainEventsExist()) {
+
+      domainEventManager.manageDomainEvents(
+          this.getClass().getSimpleName(),
+          leaveRequest.listOfDomainEvents());
+
+      leaveRequest.clearDomainEvents();
+    }
   }
 
   // Approve an existing leave request.
