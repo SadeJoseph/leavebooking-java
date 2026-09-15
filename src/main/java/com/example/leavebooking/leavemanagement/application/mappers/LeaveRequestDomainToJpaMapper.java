@@ -6,45 +6,38 @@ import com.example.leavebooking.leavemanagement.infrastructure.entities.LeaveReq
 
 public class LeaveRequestDomainToJpaMapper {
 
-    public static LeaveRequestJpa map(LeaveRequest leaveRequest) {
+  public static LeaveRequestJpa map(LeaveRequest leaveRequest) {
 
-        LeaveRequestJpa leaveRequestJpa = new LeaveRequestJpa();
+    LeaveRequestJpa leaveRequestJpa = new LeaveRequestJpa();
 
-        // Aggregate identity -> persistence id.
-        leaveRequestJpa.setId(
-                leaveRequest.id().id()
-        );
+    // Aggregate identity -> persistence id.
+    leaveRequestJpa.setId(
+        leaveRequest.id().id());
 
-        // LeaveRequest stores the StaffMember identity &the JPA entity stores the String id.
-        leaveRequestJpa.setStaffId(
-                leaveRequest.staffId().id()
-        );
+    // LeaveRequest stores the StaffMember identity &the JPA entity stores the
+    // String id.
+    leaveRequestJpa.setStaffId(
+        leaveRequest.staffId().id());
 
-        // Create a new copy of the DateRange value object
-        DateRange dateRange = new DateRange(
-                leaveRequest.dateRange().startDate(),
-                leaveRequest.dateRange().endDate()
-        );
+    // Create a new copy of the DateRange value object
+    DateRange dateRange = new DateRange(
+        leaveRequest.dateRange().startDate(),
+        leaveRequest.dateRange().endDate());
 
-        leaveRequestJpa.setDateRange(dateRange);
+    leaveRequestJpa.setDateRange(dateRange);
 
-        leaveRequestJpa.setReason(
-                leaveRequest.reason()
-        );
+    leaveRequestJpa.setReason(
+        leaveRequest.reason());
 
-        leaveRequestJpa.setLeaveType(
-                leaveRequest.leaveType().ordinal()
-        );
+    leaveRequestJpa.setLeaveType(
+        leaveRequest.leaveType().ordinal());
 
-        leaveRequestJpa.setLeaveStatus(
-                leaveRequest.leaveStatus().ordinal()
-        );
+    leaveRequestJpa.setLeaveStatus(
+        leaveRequest.leaveStatus().ordinal());
 
-  
-        leaveRequestJpa.setDescriptionOfStatus(
-                leaveRequest.leaveStatus().description()
-        );
+    leaveRequestJpa.setDescriptionOfStatus(
+        leaveRequest.leaveStatus().description());
 
-        return leaveRequestJpa;
-    }
+    return leaveRequestJpa;
+  }
 }

@@ -31,19 +31,20 @@ public class LeaveRequestTests {
                 LocalDate.of(2026, 10, 9));
     }
 
-    private LeaveRequest createValidLeaveRequest() {
-        return new LeaveRequest(
-                identity,
-                staffId,
-                dateRange,
-                "Annual leave",
-                LeaveType.ANNUAL_LEAVE);
-    }
+  private LeaveRequest createValidLeaveRequest() {
+    return LeaveRequest.leaveRequestOfWithEvent(
+            identity,
+            staffId,
+            dateRange,
+            "Annual leave",
+            LeaveType.ANNUAL_LEAVE
+    );
+}
 
     @Test
     @DisplayName("You can create a LeaveRequest when all arguments are valid")
     void test01() {
-        assertDoesNotThrow(() -> new LeaveRequest(
+        assertDoesNotThrow(() -> LeaveRequest.leaveRequestOfWithEvent(
                 identity,
                 staffId,
                 dateRange,
@@ -56,7 +57,7 @@ public class LeaveRequestTests {
     void test02() {
         Throwable exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> new LeaveRequest(
+                () -> LeaveRequest.leaveRequestOfWithEvent(
                         null,
                         staffId,
                         dateRange,
@@ -73,7 +74,7 @@ public class LeaveRequestTests {
     void test03() {
         Throwable exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> new LeaveRequest(
+                () -> LeaveRequest.leaveRequestOfWithEvent(
                         identity,
                         null,
                         dateRange,
@@ -90,7 +91,7 @@ public class LeaveRequestTests {
     void test04() {
         Throwable exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> new LeaveRequest(
+                () -> LeaveRequest.leaveRequestOfWithEvent(
                         identity,
                         staffId,
                         null,
@@ -107,7 +108,7 @@ public class LeaveRequestTests {
     void test05() {
         Throwable exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> new LeaveRequest(
+                () -> LeaveRequest.leaveRequestOfWithEvent(
                         identity,
                         staffId,
                         dateRange,
@@ -124,7 +125,7 @@ public class LeaveRequestTests {
     void test06() {
         Throwable exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> new LeaveRequest(
+                () -> LeaveRequest.leaveRequestOfWithEvent(
                         identity,
                         staffId,
                         dateRange,
@@ -204,7 +205,7 @@ public class LeaveRequestTests {
                 LocalDate.of(2026, 11, 2),
                 LocalDate.of(2026, 11, 6));
 
-        LeaveRequest leaveRequest2 = new LeaveRequest(
+        LeaveRequest leaveRequest2 =LeaveRequest.leaveRequestOfWithEvent(
                 identity,
                 staffId,
                 differentDateRange,
@@ -212,6 +213,5 @@ public class LeaveRequestTests {
                 LeaveType.ANNUAL_LEAVE);
 
         assertEquals(leaveRequest1, leaveRequest2);
-        // id's are the same so entities should be equal
     }
 }

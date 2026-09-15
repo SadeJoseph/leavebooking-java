@@ -14,6 +14,9 @@ import com.example.leavebooking.leavemanagement.ui.commands.ApproveLeaveRequestC
 import com.example.leavebooking.leavemanagement.ui.commands.RejectLeaveRequestCommand;
 import com.example.leavebooking.leavemanagement.application.exceptions.OverlappingLeaveRequestException;
 import com.example.leavebooking.leavemanagement.domain.LeaveStatus;
+import com.example.leavebooking.common.DomainEventManager;
+
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
 
@@ -25,20 +28,23 @@ import org.springframework.stereotype.Service;
 public class LeaveApplicationService {
 
   private final LeaveRequestRepository leaveRequestRepository;
+  private final DomainEventManager domainEventManager;
 
   // Create and persist a new annual leave request.
   public void addLeaveRequest(AddLeaveRequestCommand command) {
-    // Check that the staff member does not already have pending or approved leave
-    // covering these dates.
+    // Check that the staff member does not already have pending or approved
+    // leavcovering these dates.
     boolean overlappingRequest = leaveRequestRepository
         .findByStaffId(command.staffId())
         .stream()
 
-        // making sure cancelled and rejected requests should not prevent the dates being requested again.
+        // making sure cancelled and rejected requests should not prevent the dates
+        // being requested again.
         .filter(leaveRequest -> leaveRequest.getLeaveStatus() == LeaveStatus.PENDING.ordinal()
             || leaveRequest.getLeaveStatus() == LeaveStatus.APPROVED.ordinal())
 
-        // Two date ranges overlap when: new end is not before existing start AND new start is not after existing end.
+        // Two date ranges overlap when: new end is not before existing start AND new
+        // start is not after existing end.
         .anyMatch(leaveRequest -> !command.dateRange().endDate()
             .isBefore(leaveRequest.getDateRange().startDate())
             &&
@@ -51,11 +57,12 @@ public class LeaveApplicationService {
     // Generate the identity for the new LeaveRequest aggregate
     Identity<LeaveRequest> newLeaveRequestId = Identity.generateId();
 
-    // Convert staff id supplied by the command into the identity type used by the domain aggregate.
+    // Convert staff id supplied by the command into the identity type used by the
+    // domain aggregate.
     Identity<StaffMember> staffId = Identity.of(command.staffId());
 
     // Construct the domain aggregate first
-    LeaveRequest newLeaveRequest = new LeaveRequest(
+    LeaveRequest newLeaveRequest = LeaveRequest.leaveRequestOfWithEvent(
         newLeaveRequestId,
         staffId,
         command.dateRange(),
@@ -85,6 +92,7 @@ public class LeaveApplicationService {
   }
 
   // Approve an existing leave request.
+  @Transactional // so database save and event dispatch are part of the same transaction.
   public void approveLeaveRequest(ApproveLeaveRequestCommand command) {
 
     LeaveRequest leaveRequest = leaveRequestRepository
@@ -98,6 +106,16 @@ public class LeaveApplicationService {
 
     leaveRequestRepository.save(
         LeaveRequestDomainToJpaMapper.map(leaveRequest));
+
+    // Notify any subscribers of events raised by the aggregate.
+    if (leaveRequest.domainEventsExist()) {
+
+      domainEventManager.manageDomainEvents(
+          this.getClass().getSimpleName(),
+          leaveRequest.listOfDomainEvents());
+
+      leaveRequest.clearDomainEvents();
+    }
   }
 
   // Reject an existing leave request.

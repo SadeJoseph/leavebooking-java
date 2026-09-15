@@ -8,10 +8,13 @@ import com.example.leavebooking.common.AggregateRoot;
 import com.example.leavebooking.common.Entity;
 import com.example.leavebooking.common.Identity;
 import com.example.leavebooking.staffmanagement.domain.StaffMember;
+import com.example.leavebooking.leavemanagement.domain.events.LeaveRequestApprovedEvent;
+
+import java.time.LocalDate;
 
 @ToString(callSuper = true)
-public class LeaveRequest extends Entity<LeaveRequest> implements AggregateRoot{
-    
+public class LeaveRequest extends AggregateRoot<LeaveRequest> {
+
     public static final String STAFF_ID_CANNOT_BE_NULL = "Staff ID cannot be null";
     public static final String DATE_RANGE_CANNOT_BE_NULL = "Date range cannot be null";
     public static final String REASON_CANNOT_BE_EMPTY = "Reason cannot be empty";
@@ -24,13 +27,12 @@ public class LeaveRequest extends Entity<LeaveRequest> implements AggregateRoot{
 
     private LeaveStatus leaveStatus;
 
-    public LeaveRequest(
-            Identity<LeaveRequest> id, 
-            Identity<StaffMember> staffId,  // keeps aggregate bounday clean 
+    private LeaveRequest(
+            Identity<LeaveRequest> id,
+            Identity<StaffMember> staffId, // keeps aggregate bounday clean
             DateRange dateRange,
             String reason,
-            LeaveType leaveType
-    ) {
+            LeaveType leaveType) {
         super(id);
 
         if (staffId == null) {
@@ -54,18 +56,23 @@ public class LeaveRequest extends Entity<LeaveRequest> implements AggregateRoot{
     public Identity<LeaveRequest> id() {
         return id;
     }
+
     public Identity<StaffMember> staffId() {
         return staffId;
     }
+
     public DateRange dateRange() {
         return dateRange;
     }
+
     public String reason() {
         return reason;
     }
+
     public LeaveType leaveType() {
         return leaveType;
     }
+
     public LeaveStatus leaveStatus() {
         return leaveStatus;
     }
@@ -73,6 +80,12 @@ public class LeaveRequest extends Entity<LeaveRequest> implements AggregateRoot{
     public void approveLeaveRequest() {
         if (leaveStatus == LeaveStatus.PENDING) {
             leaveStatus = LeaveStatus.APPROVED;
+            addDomainEvent(
+                    new LeaveRequestApprovedEvent(
+                            LocalDate.now(),
+                            id().id(),
+                            staffId.id(),
+                            dateRange));
         }
     }
 
@@ -81,10 +94,48 @@ public class LeaveRequest extends Entity<LeaveRequest> implements AggregateRoot{
             leaveStatus = LeaveStatus.REJECTED;
         }
     }
+
     public void cancelLeaveRequest() { // leave requests can only be cancelled if they are in PENDING or APPROVED status
         if (leaveStatus == LeaveStatus.PENDING
                 || leaveStatus == LeaveStatus.APPROVED) {
             leaveStatus = LeaveStatus.CANCELLED;
         }
+    }
+
+    // Used when reconstructing an existing LeaveRequest
+    public static LeaveRequest leaveRequestOf(
+            Identity<LeaveRequest> id,
+            Identity<StaffMember> staffId,
+            DateRange dateRange,
+            String reason,
+            LeaveType leaveType,
+            LeaveStatus leaveStatus) {
+        LeaveRequest leaveRequest = new LeaveRequest(
+                id,
+                staffId,
+                dateRange,
+                reason,
+                leaveType);
+
+        leaveRequest.leaveStatus = leaveStatus;
+
+        return leaveRequest;
+    }
+
+    // Used when creating a brand new LeaveRequest.
+    public static LeaveRequest leaveRequestOfWithEvent(
+            Identity<LeaveRequest> id,
+            Identity<StaffMember> staffId,
+            DateRange dateRange,
+            String reason,
+            LeaveType leaveType) {
+        LeaveRequest leaveRequest = new LeaveRequest(
+                id,
+                staffId,
+                dateRange,
+                reason,
+                leaveType);
+
+        return leaveRequest;
     }
 }

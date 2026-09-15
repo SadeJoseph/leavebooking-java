@@ -10,7 +10,7 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 // an entity and also an aggregate root.
-public class LeaveAllowance extends Entity<LeaveAllowance> implements AggregateRoot {
+public class LeaveAllowance extends AggregateRoot<LeaveAllowance> {
 
     public static final String STAFF_ID_CANNOT_BE_NULL = "Staff ID cannot be null";
     public static final String STAFF_NAME_CANNOT_BE_NULL = "Staff name cannot be null";
@@ -21,7 +21,7 @@ public class LeaveAllowance extends Entity<LeaveAllowance> implements AggregateR
     public static final String BALANCE_CANNOT_EXCEED_ENTITLEMENT = "Remaining leave cannot exceed annual entitlement";
     public static final String ENTITLEMENT_LESS_THAN_DAYS_USED = "Annual entitlement cannot be less than leave already used";
 
-    private final Identity<StaffMember> staffId; 
+    private final Identity<StaffMember> staffId;
 
     private FullName staffName;
 
@@ -140,5 +140,27 @@ public class LeaveAllowance extends Entity<LeaveAllowance> implements AggregateR
 
         yearlyEntitlement = newEntitlement;
         remainingBalance = newEntitlement - daysAlreadyUsed;
+    }
+
+    // Used when reconstructing an existing LeaveAllowance
+    public static LeaveAllowance leaveAllowanceOf(
+            Identity<LeaveAllowance> id,
+            Identity<StaffMember> staffId,
+            FullName staffName,
+            Identity<StaffMember> managerId,
+            int yearlyEntitlement,
+            int remainingBalance) {
+
+        LeaveAllowance leaveAllowance = new LeaveAllowance(
+                id,
+                staffId,
+                staffName,
+                managerId,
+                yearlyEntitlement);
+
+        // Restore the previously saved balance.
+        leaveAllowance.remainingBalance = remainingBalance;
+
+        return leaveAllowance;
     }
 }
