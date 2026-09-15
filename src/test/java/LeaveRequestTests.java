@@ -2,12 +2,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.example.leavebooking.common.Identity;
+import com.example.leavebooking.common.domain.Identity;
 import com.example.leavebooking.leavemanagement.domain.DateRange;
 import com.example.leavebooking.leavemanagement.domain.LeaveRequest;
 import com.example.leavebooking.leavemanagement.domain.LeaveStatus;
 import com.example.leavebooking.leavemanagement.domain.LeaveType;
-import com.example.leavebooking.staffmanagement.domain.StaffMember;
+
 
 import java.time.LocalDate;
 
@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LeaveRequestTests {
     private Identity<LeaveRequest> identity;
-    private Identity<StaffMember> staffId;
+    private String staffId;
     private DateRange dateRange;
 
     @BeforeEach
@@ -23,8 +23,7 @@ public class LeaveRequestTests {
         identity = Identity.of(
                 "12345678-1234-1234-1234-123456789012");
 
-        staffId = Identity.of(
-                "87654321-4321-4321-4321-210987654321");
+        staffId = "87654321-4321-4321-4321-210987654321";
 
         dateRange = new DateRange(
                 LocalDate.of(2026, 10, 5),

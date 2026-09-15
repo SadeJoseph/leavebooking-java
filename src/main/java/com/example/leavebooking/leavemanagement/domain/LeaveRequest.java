@@ -2,14 +2,12 @@ package com.example.leavebooking.leavemanagement.domain;
 
 import lombok.ToString;
 
-import static com.example.leavebooking.common.DomainAssertions.argumentNotEmpty;
-
-import com.example.leavebooking.common.AggregateRoot;
-import com.example.leavebooking.common.Entity;
-import com.example.leavebooking.common.Identity;
-import com.example.leavebooking.staffmanagement.domain.StaffMember;
+import com.example.leavebooking.common.domain.AggregateRoot;
+import com.example.leavebooking.common.domain.Identity;
 import com.example.leavebooking.leavemanagement.domain.events.LeaveRequestApprovedEvent;
 import com.example.leavebooking.leavemanagement.domain.events.ApprovedLeaveRequestCancelledEvent;
+
+import static com.example.leavebooking.common.domain.DomainAssertions.argumentNotEmpty;
 
 import java.time.LocalDate;
 
@@ -21,7 +19,7 @@ public class LeaveRequest extends AggregateRoot<LeaveRequest> {
   public static final String REASON_CANNOT_BE_EMPTY = "Reason cannot be empty";
   public static final String LEAVE_TYPE_CANNOT_BE_NULL = "Leave type cannot be null";
 
-  private final Identity<StaffMember> staffId;
+  private final String staffId;
   private final DateRange dateRange;
   private final String reason;
   private final LeaveType leaveType;
@@ -30,7 +28,7 @@ public class LeaveRequest extends AggregateRoot<LeaveRequest> {
 
   private LeaveRequest(
       Identity<LeaveRequest> id,
-      Identity<StaffMember> staffId, // keeps aggregate bounday clean
+      String staffId, // keeps aggregate bounday clean
       DateRange dateRange,
       String reason,
       LeaveType leaveType) {
@@ -58,7 +56,7 @@ public class LeaveRequest extends AggregateRoot<LeaveRequest> {
     return id;
   }
 
-  public Identity<StaffMember> staffId() {
+  public String staffId() {
     return staffId;
   }
 
@@ -85,7 +83,7 @@ public class LeaveRequest extends AggregateRoot<LeaveRequest> {
           new LeaveRequestApprovedEvent(
               LocalDate.now(),
               id().id(),
-              staffId.id(),
+              staffId(),
               dateRange));
     }
   }
@@ -109,7 +107,7 @@ public class LeaveRequest extends AggregateRoot<LeaveRequest> {
           new ApprovedLeaveRequestCancelledEvent(
             LocalDate.now(),
             id().id(),
-            staffId.id(),
+            staffId,
             dateRange));
     }
 
@@ -121,7 +119,7 @@ public class LeaveRequest extends AggregateRoot<LeaveRequest> {
   // Used when reconstructing an existing LeaveRequest
   public static LeaveRequest leaveRequestOf(
       Identity<LeaveRequest> id,
-      Identity<StaffMember> staffId,
+      String staffId,
       DateRange dateRange,
       String reason,
       LeaveType leaveType,
@@ -141,7 +139,7 @@ public class LeaveRequest extends AggregateRoot<LeaveRequest> {
   // Used when creating a brand new LeaveRequest.
   public static LeaveRequest leaveRequestOfWithEvent(
       Identity<LeaveRequest> id,
-      Identity<StaffMember> staffId,
+      String staffId,
       DateRange dateRange,
       String reason,
       LeaveType leaveType) {

@@ -1,4 +1,4 @@
-package com.example.leavebooking.common;
+package com.example.leavebooking.common.events;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

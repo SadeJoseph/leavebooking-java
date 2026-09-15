@@ -2,8 +2,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.example.leavebooking.common.FullName;
-import com.example.leavebooking.common.Identity;
+import com.example.leavebooking.common.domain.FullName;
+import com.example.leavebooking.common.domain.Identity;
 import com.example.leavebooking.leavemanagement.domain.LeaveAllowance;
 import com.example.leavebooking.staffmanagement.domain.StaffMember;
 
@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LeaveAllowanceTests {
 
     private Identity<LeaveAllowance> identity;
-    private Identity<StaffMember> staffId;
-    private Identity<StaffMember> managerId;
+    private String staffId;
+    private String managerId;
     private FullName staffName;
 
     @BeforeEach
@@ -21,11 +21,11 @@ public class LeaveAllowanceTests {
         identity = Identity.of(
                 "12345678-1234-1234-1234-123456789012");
 
-        staffId = Identity.of(
-                "87654321-4321-4321-4321-210987654321");
+        staffId = 
+                "87654321-4321-4321-4321-210987654321";
 
-        managerId = Identity.of(
-                "11111111-2222-3333-4444-555555555555");
+        managerId =
+                "11111111-2222-3333-4444-555555555555";
 
         staffName = new FullName("Sade", "Joseph");
     }
@@ -201,7 +201,7 @@ public class LeaveAllowanceTests {
 
         LeaveAllowance leaveAllowance2 = new LeaveAllowance(
                 identity,
-                Identity.of("99999999-9999-9999-9999-999999999999"),
+                "99999999-9999-9999-9999-999999999999",
                 new FullName("Test", "Person"),
                 managerId,
                 30);

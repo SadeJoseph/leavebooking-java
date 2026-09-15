@@ -1,6 +1,6 @@
 package com.example.leavebooking.leavemanagement.application.mappers;
 
-import com.example.leavebooking.common.Identity;
+import com.example.leavebooking.common.domain.Identity;
 import com.example.leavebooking.leavemanagement.domain.DateRange;
 import com.example.leavebooking.leavemanagement.domain.LeaveRequest;
 import com.example.leavebooking.leavemanagement.domain.LeaveStatus;
@@ -19,7 +19,7 @@ public class LeaveRequestJpaToDomainMapper {
 
     return LeaveRequest.leaveRequestOf(
         Identity.of(leaveRequestJpa.getId()),
-        Identity.of(leaveRequestJpa.getStaffId()),
+        leaveRequestJpa.getStaffId(),
         new DateRange(
             leaveRequestJpa.getDateRange().startDate(),
             leaveRequestJpa.getDateRange().endDate()),

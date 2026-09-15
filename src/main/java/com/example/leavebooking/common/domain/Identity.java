@@ -1,6 +1,6 @@
-package com.example.leavebooking.common;
+package com.example.leavebooking.common.domain;
 
-import static com.example.leavebooking.common.DomainAssertions.argumentNotEmpty;
+import static com.example.leavebooking.common.domain.DomainAssertions.argumentNotEmpty;
 
 import java.time.Instant;
 import java.util.UUID;

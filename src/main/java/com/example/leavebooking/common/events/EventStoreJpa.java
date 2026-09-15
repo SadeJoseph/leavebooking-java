@@ -1,4 +1,4 @@
-package com.example.leavebooking.common;
+package com.example.leavebooking.common.events;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

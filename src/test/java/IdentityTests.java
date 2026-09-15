@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.Test;
 
-import com.example.leavebooking.common.Identity;
+import com.example.leavebooking.common.domain.Identity;
 
 import org.junit.jupiter.api.DisplayName;
 

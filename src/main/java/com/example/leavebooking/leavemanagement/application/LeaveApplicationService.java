@@ -1,12 +1,12 @@
 package com.example.leavebooking.leavemanagement.application;
 
-import com.example.leavebooking.common.Identity;
+import com.example.leavebooking.common.domain.Identity;
+import com.example.leavebooking.common.events.DomainEventManager;
 import com.example.leavebooking.leavemanagement.application.mappers.LeaveRequestDomainToJpaMapper;
 import com.example.leavebooking.leavemanagement.domain.LeaveRequest;
 import com.example.leavebooking.leavemanagement.domain.LeaveType;
 import com.example.leavebooking.leavemanagement.infrastructure.repositories.LeaveRequestRepository;
 import com.example.leavebooking.leavemanagement.ui.commands.AddLeaveRequestCommand;
-import com.example.leavebooking.staffmanagement.domain.StaffMember;
 import com.example.leavebooking.leavemanagement.application.exceptions.LeaveRequestNotFoundException;
 import com.example.leavebooking.leavemanagement.application.mappers.LeaveRequestJpaToDomainMapper;
 import com.example.leavebooking.leavemanagement.ui.commands.CancelLeaveRequestCommand;
@@ -14,7 +14,6 @@ import com.example.leavebooking.leavemanagement.ui.commands.ApproveLeaveRequestC
 import com.example.leavebooking.leavemanagement.ui.commands.RejectLeaveRequestCommand;
 import com.example.leavebooking.leavemanagement.application.exceptions.OverlappingLeaveRequestException;
 import com.example.leavebooking.leavemanagement.domain.LeaveStatus;
-import com.example.leavebooking.common.DomainEventManager;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,7 +58,7 @@ public class LeaveApplicationService {
 
     // Convert staff id supplied by the command into the identity type used by the
     // domain aggregate.
-    Identity<StaffMember> staffId = Identity.of(command.staffId());
+    String staffId = command.staffId();
 
     // Construct the domain aggregate first
     LeaveRequest newLeaveRequest = LeaveRequest.leaveRequestOfWithEvent(

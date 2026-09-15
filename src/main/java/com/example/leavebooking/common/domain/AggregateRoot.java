@@ -1,4 +1,4 @@
-package com.example.leavebooking.common;
+package com.example.leavebooking.common.domain;
 
 import com.example.leavebooking.common.events.Event;
 

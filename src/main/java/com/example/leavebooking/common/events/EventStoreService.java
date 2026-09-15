@@ -1,10 +1,8 @@
-package com.example.leavebooking.common;
+package com.example.leavebooking.common.events;
 
 import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
-
-import com.example.leavebooking.common.events.Event;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

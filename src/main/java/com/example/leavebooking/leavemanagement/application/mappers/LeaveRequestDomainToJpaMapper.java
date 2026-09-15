@@ -17,7 +17,7 @@ public class LeaveRequestDomainToJpaMapper {
     // LeaveRequest stores the StaffMember identity &the JPA entity stores the
     // String id.
     leaveRequestJpa.setStaffId(
-        leaveRequest.staffId().id());
+        leaveRequest.staffId());
 
     // Create a new copy of the DateRange value object
     DateRange dateRange = new DateRange(

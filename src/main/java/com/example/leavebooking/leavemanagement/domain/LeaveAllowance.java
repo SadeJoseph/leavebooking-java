@@ -1,10 +1,8 @@
 package com.example.leavebooking.leavemanagement.domain;
 
-import com.example.leavebooking.common.AggregateRoot;
-import com.example.leavebooking.common.Entity;
-import com.example.leavebooking.common.FullName;
-import com.example.leavebooking.common.Identity;
-import com.example.leavebooking.staffmanagement.domain.StaffMember;
+import com.example.leavebooking.common.domain.AggregateRoot;
+import com.example.leavebooking.common.domain.FullName;
+import com.example.leavebooking.common.domain.Identity;
 
 import lombok.ToString;
 
@@ -21,20 +19,20 @@ public class LeaveAllowance extends AggregateRoot<LeaveAllowance> {
     public static final String BALANCE_CANNOT_EXCEED_ENTITLEMENT = "Remaining leave cannot exceed annual entitlement";
     public static final String ENTITLEMENT_LESS_THAN_DAYS_USED = "Annual entitlement cannot be less than leave already used";
 
-    private final Identity<StaffMember> staffId;
+    private String staffId;
 
     private FullName staffName;
 
-    private Identity<StaffMember> managerId; // mamager responsible for the staff memeber
+    private String managerId; // manager responsible for the staff member
 
     private int yearlyEntitlement;
     private int remainingBalance;
 
     public LeaveAllowance(
             Identity<LeaveAllowance> id,
-            Identity<StaffMember> staffId,
+            String staffId,
             FullName staffName,
-            Identity<StaffMember> managerId,
+            String managerId,
             int yearlyEntitlement) {
         super(id);
 
@@ -61,7 +59,7 @@ public class LeaveAllowance extends AggregateRoot<LeaveAllowance> {
         return id;
     }
 
-    public Identity<StaffMember> staffId() {
+    public String staffId() {
         return staffId;
     }
 
@@ -69,7 +67,7 @@ public class LeaveAllowance extends AggregateRoot<LeaveAllowance> {
         return staffName;
     }
 
-    public Identity<StaffMember> managerId() {
+    public String managerId() {
         return managerId;
     }
 
@@ -93,7 +91,7 @@ public class LeaveAllowance extends AggregateRoot<LeaveAllowance> {
         this.staffName = new FullName(staffName);
     }
 
-    public void changeManager(Identity<StaffMember> managerId) {
+    public void changeManager(String managerId) {
         if (managerId == null) {
             throw new IllegalArgumentException(MANAGER_ID_CANNOT_BE_NULL);
         }
@@ -145,9 +143,9 @@ public class LeaveAllowance extends AggregateRoot<LeaveAllowance> {
     // Used when reconstructing an existing LeaveAllowance
     public static LeaveAllowance leaveAllowanceOf(
             Identity<LeaveAllowance> id,
-            Identity<StaffMember> staffId,
+            String staffId,
             FullName staffName,
-            Identity<StaffMember> managerId,
+            String managerId,
             int yearlyEntitlement,
             int remainingBalance) {
 

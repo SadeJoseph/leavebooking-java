@@ -21,13 +21,13 @@ public class LeaveAllowanceDomainToJpaMapper {
         leaveAllowance.id().id());
 
     leaveAllowanceJpa.setStaffId(
-        leaveAllowance.staffId().id());
+        leaveAllowance.staffId());
 
     leaveAllowanceJpa.setStaffName(
         leaveAllowance.staffName());
 
     leaveAllowanceJpa.setManagerId(
-        leaveAllowance.managerId().id());
+        leaveAllowance.managerId());
 
     leaveAllowanceJpa.setYearlyEntitlement(
         leaveAllowance.yearlyEntitlement());

@@ -1,6 +1,6 @@
 package com.example.leavebooking.leavemanagement.infrastructure.entities;
 
-import com.example.leavebooking.common.FullName;
+import com.example.leavebooking.common.domain.FullName;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

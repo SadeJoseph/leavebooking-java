@@ -1,9 +1,9 @@
 package com.example.leavebooking.staffmanagement.domain;
 
-import com.example.leavebooking.common.AggregateRoot;
-import com.example.leavebooking.common.Entity;
-import com.example.leavebooking.common.FullName;
-import com.example.leavebooking.common.Identity;
+import com.example.leavebooking.common.domain.AggregateRoot;
+import com.example.leavebooking.common.domain.Entity;
+import com.example.leavebooking.common.domain.FullName;
+import com.example.leavebooking.common.domain.Identity;
 
 import lombok.ToString;
 

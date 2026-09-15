@@ -2,9 +2,9 @@ package com.example.leavebooking.staffmanagement.domain;
 
 import jakarta.persistence.Embeddable;
 
-import static com.example.leavebooking.common.DomainAssertions.argumentNotEmpty;
+import static com.example.leavebooking.common.domain.DomainAssertions.argumentNotEmpty;
 
-import com.example.leavebooking.common.ValueObject;
+import com.example.leavebooking.common.domain.ValueObject;
 
 // Value object that represents a staff member's email address .Immutable so represented as a record
 @Embeddable

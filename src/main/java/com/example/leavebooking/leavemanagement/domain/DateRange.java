@@ -5,7 +5,7 @@ import jakarta.persistence.Embeddable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
-import com.example.leavebooking.common.ValueObject;
+import com.example.leavebooking.common.domain.ValueObject;
 
 // Represents the period covered by a leave request
 @Embeddable

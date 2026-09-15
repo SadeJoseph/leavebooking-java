@@ -1,6 +1,4 @@
-package com.example.leavebooking.common;
-
-import com.example.leavebooking.common.events.Event;
+package com.example.leavebooking.common.events;
 
 import java.util.List;
 import java.util.Objects;

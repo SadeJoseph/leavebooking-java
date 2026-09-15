@@ -1,4 +1,4 @@
-package com.example.leavebooking.common;
+package com.example.leavebooking.common.domain;
 
 import lombok.EqualsAndHashCode;
 
