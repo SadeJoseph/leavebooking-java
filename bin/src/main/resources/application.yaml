@@ -1,0 +1,14 @@
+spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: ${RABBITMQ_VHOST}
+    ssl:
+      enabled: true
+rabbitmq: 
+  outbox:
+    bindings:
+      "[com.example.leavebooking.common.events.NewStaffMemberAddedEvent]":
+        exchange: "staff"
+        routing-key: "newStaffMemberKey"

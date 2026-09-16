@@ -33,4 +33,10 @@ public class EventStoreJpa {
 
   @Column(name = "event_type")
   private String eventType;
+
+  @Column(name = "status")
+  private String status = "PENDING";
+
+  @Column(name = "retry_count")
+  private int retryCount = 0;
 }

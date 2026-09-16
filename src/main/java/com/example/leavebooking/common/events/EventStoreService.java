@@ -3,39 +3,76 @@ package com.example.leavebooking.common.events;
 import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
-// Stores domain events in the local event store.
 @Service
 @Slf4j
 @AllArgsConstructor
 public class EventStoreService {
 
-  private final EventStoreRepository eventsStore;
+  public enum StatusOfMessageDelivery {
+    PENDING,
+    PUBLISHED,
+    FAILED,
+    UNROUTABLE
+  }
 
-  public void append(Event event) {
+  private final EventStoreRepository eventStoreRepository;
+  private final ObjectMapper objectMapper;
 
-    EventStoreJpa newEventJpa = new EventStoreJpa();
+  @Transactional
+  public EventStoreJpa append(Event event) {
 
-    // database generates the event store id.
-    newEventJpa.setId(null);
+    try {
+      EventStoreJpa newEventJpa = new EventStoreJpa();
 
-    newEventJpa.setEventType(
-        event.getClass().getName());
+      newEventJpa.setId(null);
+      newEventJpa.setEventType(
+          event.getClass().getSimpleName());
+      newEventJpa.setOccurredOn(LocalDate.now());
 
-    newEventJpa.setOccurredOn(
-        LocalDate.now());
+      // Store the event payload as JSON.
+      newEventJpa.setEventBody(
+          objectMapper.writeValueAsString(event));
 
-    // Store a readable representation of the event.
-    newEventJpa.setEventBody(
-        event.toString());
+      newEventJpa.setStatus(
+          StatusOfMessageDelivery.PENDING.name());
+      newEventJpa.setRetryCount(0);
 
-    eventsStore.save(newEventJpa);
+      return eventStoreRepository.save(newEventJpa);
 
-    log.info(
-        "Added to event store: {}",
-        newEventJpa);
+    } catch (JacksonException exception) {
+      throw new IllegalArgumentException(
+          "Failed to serialise event payload",
+          exception);
+    }
+  }
+
+  @Transactional
+  public void updateStatus(
+      Long eventId,
+      StatusOfMessageDelivery statusOfMessageDelivery,
+      boolean incrementRetryCount) {
+
+    eventStoreRepository.findById(eventId).ifPresent(event -> {
+
+      event.setStatus(statusOfMessageDelivery.name());
+
+      if (incrementRetryCount) {
+        event.setRetryCount(event.getRetryCount() + 1);
+      }
+
+      eventStoreRepository.save(event);
+
+      log.error(
+          "Event {} marked as {}",
+          eventId,
+          event.getStatus());
+    });
   }
 }

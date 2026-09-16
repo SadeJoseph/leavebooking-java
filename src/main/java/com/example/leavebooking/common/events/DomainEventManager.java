@@ -30,18 +30,17 @@ public class DomainEventManager {
 		Objects.requireNonNull(
 				events,
 				"Events cannot be null");
-
 		for (Event event : events) {
 
-			log.info(
-					"{}->{}",
-					sourceContext,
-					event);
+			log.info("{} -> {}", sourceContext, event);
 
-			// Store the event locally.
-			eventStoreService.append(event);
+			// Save the event and retrieve the generated database id.
+			EventStoreJpa savedEvent = eventStoreService.append(event);
 
-			eventPublisher.publishEvent(event);
+			// Publish a new immutable version of the event
+			// containing its event-store id.
+			eventPublisher.publishEvent(
+					event.withId(savedEvent.getId()));
 		}
 	}
 }
