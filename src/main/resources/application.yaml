@@ -12,3 +12,5 @@ rabbitmq:
       "[com.example.leavebooking.common.events.NewStaffMemberAddedEvent]":
         exchange: "staff"
         routing-key: "newStaffMemberKey"
+firebase:
+  web-api-key: ${FIREBASE_WEB_API_KEY}
