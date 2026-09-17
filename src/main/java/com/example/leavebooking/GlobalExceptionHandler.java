@@ -1,25 +1,28 @@
 package com.example.leavebooking;
 
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.ConstraintViolation;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Instant;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 
 // Handles exceptions thrown anywhere in the application's controllers.
-
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
@@ -45,11 +48,23 @@ public class GlobalExceptionHandler {
       message = rse.getReason();
     }
 
+    // Authenticated user tried to access something their role
+    // does not permit.
+    else if (ex instanceof AccessDeniedException) {
+
+      status = HttpStatus.FORBIDDEN;
+      message = "Access denied";
+
+      // unauthorised access attempts to be logged.
+      log.warn(
+          "Unauthorised access attempt: {}",
+          ex.getMessage());
+    }
+
     // Handle validation errors from incoming request objects.
     else if (ex instanceof MethodArgumentNotValidException manve) {
 
       status = HttpStatus.BAD_REQUEST;
-
       message = "Validation failed for one or more fields.";
 
       validationErrors = manve
@@ -62,15 +77,14 @@ public class GlobalExceptionHandler {
                   error -> Objects.requireNonNullElse(
                       error.getDefaultMessage(),
                       "Invalid value"),
-
-                  // If two errors exist for the same field keep the first one.
+                  // If two errors exist for the same
+                  // field keep the first one.
                   (existing, replacement) -> existing));
     }
 
     else if (ex instanceof ConstraintViolationException cve) {
 
       status = HttpStatus.BAD_REQUEST;
-
       message = "Database constraint validation failed.";
 
       validationErrors = cve
@@ -81,21 +95,22 @@ public class GlobalExceptionHandler {
                   violation -> violation
                       .getPropertyPath()
                       .toString(),
-
                   ConstraintViolation::getMessage));
     }
 
     else if (ex instanceof DataIntegrityViolationException) {
+
       status = HttpStatus.BAD_REQUEST;
       message = "A duplicate record already exists";
     }
 
     else if (ex instanceof IllegalArgumentException) {
+
       status = HttpStatus.BAD_REQUEST;
       message = ex.getMessage();
     }
 
-    Map<String, Object> responseBody = new java.util.HashMap<>(
+    Map<String, Object> responseBody = new HashMap<>(
         Map.of(
             "status",
             status.value(),
@@ -113,6 +128,7 @@ public class GlobalExceptionHandler {
 
     // Only add field-level validation errors when they exist.
     if (validationErrors != null) {
+
       responseBody.put(
           "errors",
           validationErrors);

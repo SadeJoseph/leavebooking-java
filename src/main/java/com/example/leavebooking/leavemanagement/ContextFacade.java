@@ -1,66 +1,97 @@
 package com.example.leavebooking.leavemanagement;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Component;
+
 import com.example.leavebooking.leavemanagement.application.LeaveApplicationService;
 import com.example.leavebooking.leavemanagement.application.LeaveQueryHandler;
 import com.example.leavebooking.leavemanagement.application.dto.LeaveAllowanceDTO;
 import com.example.leavebooking.leavemanagement.application.dto.LeaveRequestDTO;
 import com.example.leavebooking.leavemanagement.ui.commands.AddLeaveRequestCommand;
-import com.example.leavebooking.leavemanagement.ui.commands.CancelLeaveRequestCommand;
 import com.example.leavebooking.leavemanagement.ui.commands.ApproveLeaveRequestCommand;
+import com.example.leavebooking.leavemanagement.ui.commands.CancelLeaveRequestCommand;
 import com.example.leavebooking.leavemanagement.ui.commands.RejectLeaveRequestCommand;
 
 import lombok.AllArgsConstructor;
 
-import org.springframework.stereotype.Component;
-
-@Component("leaveManagementContextFacade")
+@Component
 @AllArgsConstructor
 public class ContextFacade {
-  private final LeaveQueryHandler leaveQueryHandler;
 
-  // Return all leave requests
+  private final LeaveQueryHandler leaveQueryHandler;
+  private final LeaveApplicationService leaveApplicationService;
+
+  // ADMIN can view all leave requests across the company.
+  @PreAuthorize("hasRole('ADMIN')")
   public Iterable<LeaveRequestDTO> findAllLeaveRequests() {
+
     return leaveQueryHandler.findAllLeaveRequests();
   }
 
-  // Retrieve all leave allowances and convert each entity into a DTO.
+  // ADMIN can view all leave allowances across the company.
+  @PreAuthorize("hasRole('ADMIN')")
   public Iterable<LeaveAllowanceDTO> findAllLeaveAllowances() {
+
     return leaveQueryHandler.findAllLeaveAllowances();
   }
 
-  // Retrieve all leave requests belonging to one staff member.
-  public Iterable<LeaveRequestDTO> findLeaveRequestsByStaffId(String staffId) {
+  // USER can access only their own leave requests.
+  // MANAGER can access their own or staff assigned to them.
+  // ADMIN can access any staff member.
+  @PreAuthorize("@leaveAuthorisationService.canAccessStaff(#staffId, authentication)")
+  public Iterable<LeaveRequestDTO> findLeaveRequestsByStaffId(
+      String staffId) {
+
     return leaveQueryHandler.findLeaveRequestsByStaffId(staffId);
   }
 
-  // the leave allowance belonging to one staff member.
-  public LeaveAllowanceDTO findLeaveAllowanceByStaffId(String staffId) {
+  // Same ownership / manager relationship check for leave allowance.
+  @PreAuthorize("@leaveAuthorisationService.canAccessStaff(#staffId, authentication)")
+  public LeaveAllowanceDTO findLeaveAllowanceByStaffId(
+      String staffId) {
+
     return leaveQueryHandler.findLeaveAllowanceByStaffId(staffId);
   }
 
-  // Query pending leave requests for staff assigned to one manager.
+  // MANAGER can only view pending requests for their own team.
+  // ADMIN can view any manager's team.
+  @PreAuthorize("@leaveAuthorisationService.canAccessManagerTeam(#managerId, authentication)")
   public Iterable<LeaveRequestDTO> findPendingLeaveRequestsByManagerId(
       String managerId) {
-    return leaveQueryHandler.findPendingLeaveRequestsByManagerId(managerId);
+
+    return leaveQueryHandler
+        .findPendingLeaveRequestsByManagerId(managerId);
   }
 
-  private final LeaveApplicationService leaveApplicationService;
+  @PreAuthorize("@leaveAuthorisationService.canAddLeave(#command.staffId, authentication)")
+  public void addLeaveRequest(
+      AddLeaveRequestCommand command) {
 
-  // Command to create a new annual leave request.
-  public void addLeaveRequest(AddLeaveRequestCommand command) {
     leaveApplicationService.addLeaveRequest(command);
   }
 
-  // Command to cancel an existing leave request.
-  public void cancelLeaveRequest(CancelLeaveRequestCommand command) {
+  @PreAuthorize("@leaveAuthorisationService.canCancelLeave(#command.leaveRequestId, authentication)")
+  public void cancelLeaveRequest(
+      CancelLeaveRequestCommand command) {
+
     leaveApplicationService.cancelLeaveRequest(command);
   }
-// approve
-  public void approveLeaveRequest(ApproveLeaveRequestCommand command) {
+
+  // ADMIN can approve any request.
+  // MANAGER can only approve leave belonging to staff assigned to them.
+  @PreAuthorize("@leaveAuthorisationService.canApproveOrReject(#command.leaveRequestId, authentication)")
+  public void approveLeaveRequest(
+      ApproveLeaveRequestCommand command) {
+
     leaveApplicationService.approveLeaveRequest(command);
   }
-// reject
-  public void rejectLeaveRequest(RejectLeaveRequestCommand command) {
+
+  // ADMIN can reject any request.
+  // MANAGER can only reject leave belonging to staff assigned to them.
+  @PreAuthorize("@leaveAuthorisationService.canApproveOrReject(#command.leaveRequestId, authentication)")
+  public void rejectLeaveRequest(
+      RejectLeaveRequestCommand command) {
+
     leaveApplicationService.rejectLeaveRequest(command);
   }
 }

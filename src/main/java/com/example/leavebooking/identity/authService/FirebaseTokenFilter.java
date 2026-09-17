@@ -19,6 +19,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -37,8 +38,6 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
 
     if (AUTH_HEADER != null
         && AUTH_HEADER.startsWith(BEARER)) {
-
-      // Token follows the "Bearer " prefix.
       final String token = AUTH_HEADER.substring(BEARER.length());
 
       try {
@@ -82,9 +81,13 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
     List<GrantedAuthority> authorities = List.of(
         new SimpleGrantedAuthority(role));
 
-    return new UsernamePasswordAuthenticationToken(
+    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
         decodedToken.getUid(),
         null,
         authorities);
+
+    authentication.setDetails(decodedToken);
+
+    return authentication;
   }
 }

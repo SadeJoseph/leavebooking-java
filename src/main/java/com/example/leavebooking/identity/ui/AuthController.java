@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.leavebooking.identity.authService.FirebaseAuthService;
 import com.example.leavebooking.identity.dto.RegisterRequest;
 import com.example.leavebooking.identity.dto.RegisterResponse;
+import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.example.leavebooking.identity.dto.LoginRequest;
 import com.example.leavebooking.identity.dto.LoginResponse;
@@ -43,7 +44,8 @@ public class AuthController {
         request.username(),
         request.email(),
         request.password(),
-        request.role());
+        request.role(),
+        request.staffId());
 
     RegisterResponse response = new RegisterResponse(
         userRecord.getUid(),
@@ -78,7 +80,16 @@ public class AuthController {
         .map(GrantedAuthority::getAuthority)
         .collect(Collectors.joining(", "));
 
+    FirebaseToken firebaseToken = (FirebaseToken) authentication.getDetails();
+
+    String staffId = (String) firebaseToken
+        .getClaims()
+        .get("staffId");
+
     return ResponseEntity.ok(
-        roles + " access granted");
+        roles
+            + " access granted"
+            + ", staffId: "
+            + staffId);
   }
 }

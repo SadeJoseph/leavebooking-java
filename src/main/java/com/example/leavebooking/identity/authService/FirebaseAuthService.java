@@ -1,17 +1,18 @@
 package com.example.leavebooking.identity.authService;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClient;
 
+import com.example.leavebooking.identity.dto.LoginResponse;
 import com.example.leavebooking.identity.security.Role;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
-import com.example.leavebooking.identity.dto.LoginResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,27 +35,48 @@ public class FirebaseAuthService {
       String username,
       String email,
       String password,
-      String role) throws Exception {
+      String role,
+      String staffId) throws Exception {
 
-    // Details to create the user account.
+    // Confirm that the supplied role is valid and convert it
+    String confirmedRole = role != null
+        ? Role.fromString(role).getAuthority()
+        : Role.USER.getAuthority();
+
+    // USER and MANAGER accounts must be linked
+    // to a staff member in app
+    if (!confirmedRole.equals(Role.ADMIN.getAuthority())
+        && (staffId == null || staffId.isBlank())) {
+
+      throw new IllegalArgumentException(
+          "Staff ID is required for user and manager accounts");
+    }
+
+    // Details Firebase needs to create the user.
     CreateRequest createRequest = new CreateRequest()
         .setEmail(email)
         .setPassword(password)
         .setDisplayName(username)
         .setEmailVerified(false);
 
-    // Create the account in Firebase Authentication.
+    // Create the user in Firebase Authentication.
     UserRecord userRecord = firebaseAuth.createUser(createRequest);
 
-    // Check that the supplied role is one of our valid Role values.
-    String confirmedRole = role != null
-        ? Role.fromString(role).getAuthority()
-        : Role.USER.name();
+    Map<String, Object> customClaims = new HashMap<>();
 
-    // Add our application-specific data to the Firebase user's JWT claims.
-    Map<String, Object> customClaims = Map.of(
-        "role", confirmedRole,
-        "admin", false);
+    customClaims.put("role", confirmedRole);
+
+    customClaims.put(
+        "admin",
+        confirmedRole.equals(
+            Role.ADMIN.getAuthority()));
+
+    // Admin does not need staffId for our ownership checks.
+    if (staffId != null && !staffId.isBlank()) {
+      customClaims.put(
+          "staffId",
+          staffId.trim());
+    }
 
     firebaseAuth.setCustomUserClaims(
         userRecord.getUid(),

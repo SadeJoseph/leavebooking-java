@@ -30,10 +30,8 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
 
         .authorizeHttpRequests(auth -> auth
-            // Registration/login endpoints must be accessible before a user has authenticated.
-            .requestMatchers("/auth/**").permitAll()
-
-            // Everything else requires authentication.
+            .requestMatchers("/auth/login").permitAll()
+            .requestMatchers("/auth/register").hasRole("ADMIN")
             .anyRequest().authenticated())
 
         .oauth2ResourceServer(oauth2 -> oauth2
