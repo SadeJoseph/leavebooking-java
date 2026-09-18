@@ -47,7 +47,6 @@ public class LeaveAllowance extends AggregateRoot<LeaveAllowance> {
         }
 
         this.staffId = staffId;
-
         updateStaffName(staffName);
         this.managerId = managerId;
         this.yearlyEntitlement = yearlyEntitlement;
@@ -62,27 +61,22 @@ public class LeaveAllowance extends AggregateRoot<LeaveAllowance> {
     public String staffId() {
         return staffId;
     }
-
     public FullName staffName() {
         return staffName;
     }
-
     public String managerId() {
         return managerId;
     }
-
     public int yearlyEntitlement() {
         return yearlyEntitlement;
     }
-
     public int remainingBalance() {
         return remainingBalance;
     }
-
     public int daysUsed() {
         return yearlyEntitlement - remainingBalance;
     }
-
+    
     public void updateStaffName(FullName staffName) {
         if (staffName == null) {
             throw new IllegalArgumentException(STAFF_NAME_CANNOT_BE_NULL);

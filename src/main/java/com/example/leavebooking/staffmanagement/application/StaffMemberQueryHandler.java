@@ -28,7 +28,7 @@ public class StaffMemberQueryHandler {
             .findAll()
             .spliterator(),
             false)
-        .map(StaffMemberJpaToDTOMapper::toStaffMemberDTO) // means every JPA entity is converted to a DTO before leaves pplication layer
+        .map(StaffMemberJpaToDTOMapper::toStaffMemberDTO) // means every JPA entity is converted to a DTO before leaves application layer
         .collect(toList());
   }
 
