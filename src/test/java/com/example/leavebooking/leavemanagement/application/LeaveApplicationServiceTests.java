@@ -25,6 +25,7 @@ import org.mockito.ArgumentCaptor;
 import com.example.leavebooking.common.events.DomainEventManager;
 import com.example.leavebooking.leavemanagement.application.exceptions.LeaveRequestNotFoundException;
 import com.example.leavebooking.leavemanagement.domain.DateRange;
+import com.example.leavebooking.leavemanagement.infrastructure.repositories.LeaveAllowanceRepository;
 import com.example.leavebooking.leavemanagement.infrastructure.repositories.LeaveRequestRepository;
 import com.example.leavebooking.leavemanagement.ui.commands.AddLeaveRequestCommand;
 import com.example.leavebooking.leavemanagement.ui.commands.ApproveLeaveRequestCommand;
@@ -35,11 +36,15 @@ import com.example.leavebooking.leavemanagement.domain.LeaveStatus;
 import com.example.leavebooking.leavemanagement.domain.LeaveType;
 import com.example.leavebooking.leavemanagement.infrastructure.entities.LeaveRequestJpa;
 
+
 @ExtendWith(MockitoExtension.class)
 class LeaveApplicationServiceTests {
 
   @Mock
   private LeaveRequestRepository leaveRequestRepository;
+  
+  @Mock
+  private LeaveAllowanceRepository leaveAllowanceRepository;
 
   @Mock
   private DomainEventManager domainEventManager;
@@ -49,8 +54,9 @@ class LeaveApplicationServiceTests {
   @BeforeEach
   void setUp() {
 
-    leaveApplicationService = new LeaveApplicationService(
+  leaveApplicationService = new LeaveApplicationService(
         leaveRequestRepository,
+        leaveAllowanceRepository,
         domainEventManager);
   }
 

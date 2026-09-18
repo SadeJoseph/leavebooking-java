@@ -9,6 +9,7 @@ public record NewStaffMemberAddedEvent(
     String firstName,
     String surname,
     String email,
+    String department,
     String managerId) implements RemoteEvent {
 
   // Used when the event is first created before an event-store id exists.
@@ -18,7 +19,9 @@ public record NewStaffMemberAddedEvent(
       String firstName,
       String surname,
       String email,
+      String department,
       String managerId) {
+
     this(
         null,
         occurredOn,
@@ -26,6 +29,7 @@ public record NewStaffMemberAddedEvent(
         firstName,
         surname,
         email,
+        department,
         managerId);
   }
 
@@ -36,6 +40,7 @@ public record NewStaffMemberAddedEvent(
 
   @Override
   public NewStaffMemberAddedEvent withId(Long newId) {
+
     return new NewStaffMemberAddedEvent(
         newId,
         this.occurredOn,
@@ -43,6 +48,7 @@ public record NewStaffMemberAddedEvent(
         this.firstName,
         this.surname,
         this.email,
+        this.department,
         this.managerId);
   }
 }

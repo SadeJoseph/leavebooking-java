@@ -16,12 +16,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 
 @WebMvcTest(StaffMemberController.class)
 @DisplayName("StaffMemberController MVC Unit Tests")
@@ -40,7 +42,8 @@ class StaffMemberControllerTests {
         id,
         "Sade",
         "Joseph",
-        "sade.joseph@example.com");
+        "sade.joseph@example.com",
+        "Engineering");
   }
 
   @Nested
@@ -60,15 +63,14 @@ class StaffMemberControllerTests {
       // Act + Assert
       mockMvc.perform(
           get("/staff")
-          .accept(MediaType.APPLICATION_JSON))
+              .accept(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.length()").value(1))
           .andExpect(jsonPath("$[0].id").value("0001"))
           .andExpect(jsonPath("$[0].firstName").value("Sade"))
           .andExpect(jsonPath("$[0].surname").value("Joseph"))
-          .andExpect(
-              jsonPath("$[0].emailAddress")
-                  .value("sade.joseph@example.com"));
+          .andExpect(jsonPath("$[0].emailAddress").value("sade.joseph@example.com"))
+          .andExpect(jsonPath("$[0].department").value("Engineering"));
     }
   }
 
@@ -96,7 +98,34 @@ class StaffMemberControllerTests {
                   MediaType.APPLICATION_JSON))
           .andExpect(jsonPath("$.id").value("0001"))
           .andExpect(jsonPath("$.firstName").value("Sade"))
-          .andExpect(jsonPath("$.surname").value("Joseph"));
+          .andExpect(jsonPath("$.surname").value("Joseph"))
+          .andExpect(jsonPath("$.department").value("Engineering"));
+    }
+  }
+
+  @Nested
+  @DisplayName("Update Staff Member Department")
+  class UpdateStaffMemberDepartment {
+
+    @Test
+    @DisplayName("A staff member department can be updated with HTTP 204")
+    void test01() throws Exception {
+
+      // Act + Assert
+      mockMvc.perform(
+          patch("/staff/{staff_id}/department",
+              "0001")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content("""
+                  {
+                    "department": "Finance"
+                  }
+                  """))
+          .andExpect(status().isNoContent());
+
+      verify(facade).updateDepartment(
+          "0001",
+          "Finance");
     }
   }
 }

@@ -57,6 +57,10 @@ class StaffMemberQueryHandlerTests {
 
     // Assert
     assertEquals(1, results.size());
+
+    assertEquals(
+        "Engineering",
+        results.getFirst().department());
   }
 
   @Test
@@ -74,7 +78,6 @@ class StaffMemberQueryHandlerTests {
             .findStaffMemberById("9999"));
   }
 
-
   private StaffMemberJpa getValidStaffMember() {
 
     StaffMemberJpa staffMember = new StaffMemberJpa();
@@ -82,13 +85,12 @@ class StaffMemberQueryHandlerTests {
     staffMember.setId("0001");
 
     staffMember.setFullName(
-        new FullName(
-            "Sade",
-            "Joseph"));
+        new FullName("Sade", "Joseph"));
 
     staffMember.setEmailAddress(
-        new EmailAddress(
-            "sade.joseph@example.com"));
+        new EmailAddress("sade.joseph@example.com"));
+
+    staffMember.setDepartment("Engineering");
 
     return staffMember;
   }

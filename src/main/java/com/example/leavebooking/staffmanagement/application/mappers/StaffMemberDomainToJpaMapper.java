@@ -18,6 +18,9 @@ public class StaffMemberDomainToJpaMapper {
     staffMemberJpa.setEmailAddress(
         staffMember.emailAddress());
 
+    staffMemberJpa.setDepartment(
+        staffMember.department());
+
     return staffMemberJpa;
   }
 }

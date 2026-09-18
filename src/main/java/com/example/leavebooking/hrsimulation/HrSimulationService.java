@@ -10,6 +10,7 @@ import com.example.leavebooking.common.events.DomainEventManager;
 import com.example.leavebooking.common.events.NewStaffMemberAddedEvent;
 
 import lombok.AllArgsConstructor;
+
 // simulates external HR system sending events to the application
 @Service
 @AllArgsConstructor
@@ -23,6 +24,7 @@ public class HrSimulationService {
       String firstName,
       String surname,
       String email,
+      String department,
       String managerId) {
 
     NewStaffMemberAddedEvent event = new NewStaffMemberAddedEvent(
@@ -31,6 +33,7 @@ public class HrSimulationService {
         firstName,
         surname,
         email,
+        department,
         managerId);
 
     domainEventManager.manageDomainEvents(

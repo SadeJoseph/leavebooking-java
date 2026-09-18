@@ -34,6 +34,13 @@ public class ContextFacade {
 
     return leaveQueryHandler.findAllLeaveAllowances();
   }
+    // ADMIN can view all outstanding leave requests across the company.
+  @PreAuthorize("hasRole('ADMIN')")
+  public Iterable<LeaveRequestDTO> findAllPendingLeaveRequests() {
+
+    return leaveQueryHandler
+        .findAllPendingLeaveRequests();
+  }
 
   // USER can access only their own leave requests.
   // MANAGER can access their own or staff assigned to them.
@@ -93,5 +100,16 @@ public class ContextFacade {
       RejectLeaveRequestCommand command) {
 
     leaveApplicationService.rejectLeaveRequest(command);
+  }
+
+  // ADMIN can amend the annual leave entitlement assigned to a staff member.
+  @PreAuthorize("hasRole('ADMIN')")
+  public void amendYearlyEntitlement(
+      String staffId,
+      int newEntitlement) {
+
+    leaveApplicationService.amendYearlyEntitlement(
+        staffId,
+        newEntitlement);
   }
 }

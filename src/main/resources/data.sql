@@ -4,39 +4,45 @@ INSERT INTO staff_member(
     id,
     first_name,
     surname,
-    email_address
+    email_address,
+    department
 )
 VALUES(
     '0001',
     'Sade',
     'Joseph',
-    'sade.joseph@example.com'
+    'sade.joseph@example.com',
+    'Engineering'
 );
 
 INSERT INTO staff_member(
     id,
     first_name,
     surname,
-    email_address
+    email_address,
+    department
 )
 VALUES(
     '0002',
     'Alex',
     'Smith',
-    'alex.smith@example.com'
+    'alex.smith@example.com',
+    'Engineering'
 );
 
 INSERT INTO staff_member(
     id,
     first_name,
     surname,
-    email_address
+    email_address,
+    department
 )
 VALUES(
     '0003',
     'Jordan',
     'Brown',
-    'jordan.brown@example.com'
+    'jordan.brown@example.com',
+    'Management'
 );
 
 -- PENDING annual leave request for staff member 0001.

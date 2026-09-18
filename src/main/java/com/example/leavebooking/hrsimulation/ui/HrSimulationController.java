@@ -28,6 +28,7 @@ public class HrSimulationController {
         request.firstName(),
         request.surname(),
         request.email(),
+        request.department(),
         request.managerId());
   }
 
@@ -37,6 +38,7 @@ public class HrSimulationController {
       String firstName,
       String surname,
       String email,
+      String department,
       String managerId) {
   }
 }

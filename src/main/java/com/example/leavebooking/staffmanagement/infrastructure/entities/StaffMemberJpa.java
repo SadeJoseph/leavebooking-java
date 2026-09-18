@@ -38,4 +38,8 @@ public class StaffMemberJpa {
     @Embedded
     @Valid
     private EmailAddress emailAddress;
+   
+    // Department the staff member belongs to.
+    @Column(name = "department")
+    private String department;
 }

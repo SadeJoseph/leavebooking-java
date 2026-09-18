@@ -11,136 +11,214 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class StaffMemberTests {
 
-    private Identity<StaffMember> identity;
-    private FullName fullName;
-    private EmailAddress emailAddress;
+  private Identity<StaffMember> identity;
 
-    @BeforeEach
-    void setUp() { // create some stable data for testing.
-        identity = Identity.of("12345678-1234-1234-1234-123456789012");
-        fullName = new FullName("first", "surname");
-        emailAddress = new EmailAddress("first.surname@example.com");
-    }
+  private FullName fullName;
 
-    private StaffMember createValidStaffMember() {
-        return new StaffMember(identity, fullName, emailAddress);
-    }
+  private EmailAddress emailAddress;
 
-    @Test
-    @DisplayName("You can create a StaffMember when all arguments are valid")
-    void test01() {
-        assertDoesNotThrow(() ->
-                new StaffMember(identity, fullName, emailAddress)
-        );
-    }
+  private String department;
 
-    @Test
-    @DisplayName("You cannot create a StaffMember if the id is null")
-    void test02() {
-        Throwable exception = assertThrows(IllegalArgumentException.class, () ->
-                new StaffMember(null, fullName, emailAddress)
-        );
+  @BeforeEach
+  void setUp() {
 
-        assertEquals(
-                StaffMember.IDENTITY_CANNOT_BE_NULL,
-                exception.getMessage()
-        );
-    }
+    // create some stable data for testing.
+    identity = Identity.of(
+        "12345678-1234-1234-1234-123456789012");
 
-    @Test
-    @DisplayName("You cannot create a StaffMember if the full name is null")
-    void test03() {
-        Throwable exception = assertThrows(IllegalArgumentException.class, () ->
-                new StaffMember(identity, null, emailAddress)
-        );
+    fullName = new FullName(
+        "first",
+        "surname");
 
-        assertEquals(
-                StaffMember.FULL_NAME_CANNOT_BE_NULL,
-                exception.getMessage()
-        );
-    }
+    emailAddress = new EmailAddress(
+        "first.surname@example.com");
 
-    @Test
-    @DisplayName("You cannot create a StaffMember if the email address is null")
-    void test04() {
-        Throwable exception = assertThrows(IllegalArgumentException.class, () ->
-                new StaffMember(identity, fullName, null)
-        );
+    department = "Engineering";
+  }
 
-        assertEquals(
-                StaffMember.EMAIL_ADDRESS_CANNOT_BE_NULL,
-                exception.getMessage()
-        );
-    }
+  private StaffMember createValidStaffMember() {
 
-    @Test
-    @DisplayName("You can update a full name if that new full name is valid")
-    void test05() {
-        StaffMember staffMember = createValidStaffMember();
-        FullName newFullName = new FullName("first2", "surname2");
+    return new StaffMember(
+        identity,
+        fullName,
+        emailAddress,
+        department);
+  }
 
-        assertDoesNotThrow(() ->
-                staffMember.updateFullName(newFullName)
-        );
-    }
+  @Test
+  @DisplayName("You can create a StaffMember when all arguments are valid")
+  void test01() {
 
-    @Test
-    @DisplayName("You cannot change the full name if that new full name is null")
-    void test06() {
-        StaffMember staffMember = createValidStaffMember();
+    assertDoesNotThrow(() -> new StaffMember(
+        identity,
+        fullName,
+        emailAddress,
+        department));
+  }
 
-        Throwable exception = assertThrows(IllegalArgumentException.class, () ->
-                staffMember.updateFullName(null)
-        );
+  @Test
+  @DisplayName("You cannot create a StaffMember if the id is null")
+  void test02() {
 
-        assertEquals(
-                StaffMember.FULL_NAME_CANNOT_BE_NULL,
-                exception.getMessage()
-        );
-    }
+    Throwable exception = assertThrows(
+        IllegalArgumentException.class,
+        () -> new StaffMember(
+            null,
+            fullName,
+            emailAddress,
+            department));
 
-    @Test
-    @DisplayName("You can change an email address if that new email address is valid")
-    void test07() {
-        StaffMember staffMember = createValidStaffMember();
-        EmailAddress newEmailAddress =
-                new EmailAddress("new.email@example.com");
+    assertEquals(
+        StaffMember.IDENTITY_CANNOT_BE_NULL,
+        exception.getMessage());
+  }
 
-        assertDoesNotThrow(() ->
-                staffMember.changeEmailAddress(newEmailAddress)
-        );
-    }
+  @Test
+  @DisplayName("You cannot create a StaffMember if the full name is null")
+  void test03() {
 
-    @Test
-    @DisplayName("You cannot change an email address if that new email address is null")
-    void test08() {
-        StaffMember staffMember = createValidStaffMember();
+    Throwable exception = assertThrows(
+        IllegalArgumentException.class,
+        () -> new StaffMember(
+            identity,
+            null,
+            emailAddress,
+            department));
 
-        Throwable exception = assertThrows(IllegalArgumentException.class, () ->
-                staffMember.changeEmailAddress(null)
-        );
+    assertEquals(
+        StaffMember.FULL_NAME_CANNOT_BE_NULL,
+        exception.getMessage());
+  }
 
-        assertEquals(
-                StaffMember.EMAIL_ADDRESS_CANNOT_BE_NULL,
-                exception.getMessage()
-        );
-    }
+  @Test
+  @DisplayName("You cannot create a StaffMember if the email address is null")
+  void test04() {
 
-    @Test
-    @DisplayName("Two StaffMembers with the same id are considered equal")
-    void test09() {
-        StaffMember staffMember1 = createValidStaffMember();
+    Throwable exception = assertThrows(
+        IllegalArgumentException.class,
+        () -> new StaffMember(
+            identity,
+            fullName,
+            null,
+            department));
 
-        FullName differentName =
-                new FullName("first2", "surname2");
+    assertEquals(
+        StaffMember.EMAIL_ADDRESS_CANNOT_BE_NULL,
+        exception.getMessage());
+  }
 
-        EmailAddress differentEmailAddress =
-                new EmailAddress("different@example.com");
+  @Test
+  @DisplayName("You can update a full name if that new full name is valid")
+  void test05() {
 
-        StaffMember staffMember2 =
-                new StaffMember(identity, differentName, differentEmailAddress);
+    StaffMember staffMember = createValidStaffMember();
 
-        assertEquals(staffMember1, staffMember2);
-        // id's the same so entities should be equal
-    }
+    FullName newFullName = new FullName(
+        "first2",
+        "surname2");
+
+    assertDoesNotThrow(() -> staffMember.updateFullName(
+        newFullName));
+  }
+
+  @Test
+  @DisplayName("You cannot change the full name if that new full name is null")
+  void test06() {
+
+    StaffMember staffMember = createValidStaffMember();
+
+    Throwable exception = assertThrows(
+        IllegalArgumentException.class,
+        () -> staffMember
+            .updateFullName(null));
+
+    assertEquals(
+        StaffMember.FULL_NAME_CANNOT_BE_NULL,
+        exception.getMessage());
+  }
+
+  @Test
+  @DisplayName("You can change an email address if that new email address is valid")
+  void test07() {
+
+    StaffMember staffMember = createValidStaffMember();
+
+    EmailAddress newEmailAddress = new EmailAddress(
+        "new.email@example.com");
+
+    assertDoesNotThrow(() -> staffMember.changeEmailAddress(
+        newEmailAddress));
+  }
+
+  @Test
+  @DisplayName("You cannot change an email address if that new email address is null")
+  void test08() {
+
+    StaffMember staffMember = createValidStaffMember();
+
+    Throwable exception = assertThrows(
+        IllegalArgumentException.class,
+        () -> staffMember
+            .changeEmailAddress(null));
+
+    assertEquals(
+        StaffMember.EMAIL_ADDRESS_CANNOT_BE_NULL,
+        exception.getMessage());
+  }
+
+  @Test
+  @DisplayName("Two StaffMembers with the same id are considered equal")
+  void test09() {
+
+    StaffMember staffMember1 = createValidStaffMember();
+
+    FullName differentName = new FullName(
+        "first2",
+        "surname2");
+
+    EmailAddress differentEmailAddress = new EmailAddress(
+        "different@example.com");
+
+    StaffMember staffMember2 = new StaffMember(
+        identity,
+        differentName,
+        differentEmailAddress,
+        "Finance");
+
+    assertEquals(
+        staffMember1,
+        staffMember2);
+
+    // ids are the same so entities should be equal
+  }
+
+  @Test
+  @DisplayName("You can update a department when it is valid")
+  void test10() {
+
+    StaffMember staffMember = createValidStaffMember();
+
+    assertDoesNotThrow(() -> staffMember
+        .updateDepartment("Finance"));
+
+    assertEquals(
+        "Finance",
+        staffMember.department());
+  }
+
+  @Test
+  @DisplayName("You cannot update a department when it is blank")
+  void test11() {
+
+    StaffMember staffMember = createValidStaffMember();
+
+    Throwable exception = assertThrows(
+        IllegalArgumentException.class,
+        () -> staffMember
+            .updateDepartment(" "));
+
+    assertEquals(
+        StaffMember.DEPARTMENT_CANNOT_BE_BLANK,
+        exception.getMessage());
+  }
 }

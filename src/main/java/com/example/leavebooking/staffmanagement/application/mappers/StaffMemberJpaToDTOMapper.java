@@ -20,6 +20,7 @@ public class StaffMemberJpaToDTOMapper {
         staffMember.getId(),
         staffMember.getFullName().firstName(),
         staffMember.getFullName().surname(),
-        staffMember.getEmailAddress().emailAddress());
+        staffMember.getEmailAddress().emailAddress(),
+        staffMember.getDepartment());
   }
 }

@@ -81,13 +81,26 @@ public class LeaveQueryHandler {
         .map(leaveAllowance -> leaveAllowance.getStaffId())
         .collect(toSet());
 
-    // Then retrieve pending leave requests and keep only those belongin to staff managed by this manager.
+    // Then retrieve pending leave requests and keep only those belongin to staff
+    // managed by this manager.
     return leaveRequestRepository
         .findByLeaveStatus(LeaveStatus.PENDING.ordinal())
         .stream()
         .filter(leaveRequest -> managedStaffIds.contains(
             leaveRequest.getStaffId()))
         .map(LeaveRequestJpaToDTOMapper::toLeaveRequestDTO)
+        .collect(toList());
+  }
+
+  // Retrieve all outstanding leave requests across the company.
+  public Iterable<LeaveRequestDTO> findAllPendingLeaveRequests() {
+
+    return leaveRequestRepository
+        .findByLeaveStatus(
+            LeaveStatus.PENDING.ordinal())
+        .stream()
+        .map(
+            LeaveRequestJpaToDTOMapper::toLeaveRequestDTO)
         .collect(toList());
   }
 }

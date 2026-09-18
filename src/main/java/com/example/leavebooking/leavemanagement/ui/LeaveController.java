@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PatchMapping;
 
 import com.example.leavebooking.leavemanagement.ui.commands.AddLeaveRequestCommand;
 import com.example.leavebooking.leavemanagement.ui.commands.ApproveLeaveRequestCommand;
@@ -89,5 +90,28 @@ public class LeaveController {
   public void rejectLeaveRequest(
       @RequestBody RejectLeaveRequestCommand command) {
     facade.rejectLeaveRequest(command);
+  }
+
+  // Amend the annual leave entitlement assigned to a staff member.
+  @PatchMapping("/allowances/staff/{staff_id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void amendYearlyEntitlement(
+      @PathVariable String staff_id,
+      @RequestBody AmendYearlyEntitlementRequest request) {
+
+    facade.amendYearlyEntitlement(
+        staff_id,
+        request.yearlyEntitlement());
+  }
+
+  public record AmendYearlyEntitlementRequest(
+      int yearlyEntitlement) {
+  }
+
+  @GetMapping("/requests/pending")
+  @ResponseStatus(HttpStatus.OK)
+  public Iterable<LeaveRequestDTO> getAllPendingLeaveRequests() {
+
+    return facade.findAllPendingLeaveRequests();
   }
 }
