@@ -1,85 +1,102 @@
 package com.example.leavebooking.staffmanagement.ui;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.example.leavebooking.staffmanagement.ContextFacade;
 import com.example.leavebooking.staffmanagement.application.dto.StaffMemberDTO;
 
-@ExtendWith(MockitoExtension.class)
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
+
+import static org.mockito.BDDMockito.given;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(StaffMemberController.class)
+@DisplayName("StaffMemberController MVC Unit Tests")
 class StaffMemberControllerTests {
 
-  @Mock
+  @Autowired
+  private MockMvc mockMvc;
+
+  @MockitoBean
   private ContextFacade facade;
 
-  private StaffMemberController staffMemberController;
+  private StaffMemberDTO createValidStaffMemberDTO(
+      String id) {
 
-  @BeforeEach
-  void setUp() {
-
-    // SUT - Subject Under Test
-    staffMemberController = new StaffMemberController(facade);
-  }
-
-  @Test
-  @DisplayName("All staff members are returned from the facade")
-  void test01() {
-
-    // Arrange
-    StaffMemberDTO staffMember = new StaffMemberDTO(
-        "0001",
+    return new StaffMemberDTO(
+        id,
         "Sade",
         "Joseph",
         "sade.joseph@example.com");
-
-    List<StaffMemberDTO> expected = List.of(staffMember);
-
-    when(facade.findAllStaffMembers())
-        .thenReturn(expected);
-
-    // Act
-    Iterable<StaffMemberDTO> result = staffMemberController.getAllStaffMembers();
-
-    // Assert
-    assertSame(expected, result);
-
-    verify(facade)
-        .findAllStaffMembers();
   }
 
-  @Test
-  @DisplayName("A staff member can be retrieved using their staff id")
-  void test02() {
+  @Nested
+  @DisplayName("Find All Staff Members")
+  class FindAllStaffMembers {
 
-    // Arrange
-    StaffMemberDTO expected = new StaffMemberDTO(
-        "0001",
-        "Sade",
-        "Joseph",
-        "sade.joseph@example.com");
+    @Test
+    @DisplayName("All staff members are returned with HTTP 200")
+    void test01() throws Exception {
 
-    when(facade.findStaffMemberById("0001"))
-        .thenReturn(expected);
+      // Arrange
+      StaffMemberDTO staffMember = createValidStaffMemberDTO("0001");
 
-    // Act
-    StaffMemberDTO result = staffMemberController
-        .getStaffMemberById("0001");
+      given(facade.findAllStaffMembers())
+          .willReturn(List.of(staffMember));
 
-    // Assert
-    assertEquals(expected, result);
+      // Act + Assert
+      mockMvc.perform(
+          get("/staff")
+          .accept(MediaType.APPLICATION_JSON))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.length()").value(1))
+          .andExpect(jsonPath("$[0].id").value("0001"))
+          .andExpect(jsonPath("$[0].firstName").value("Sade"))
+          .andExpect(jsonPath("$[0].surname").value("Joseph"))
+          .andExpect(
+              jsonPath("$[0].emailAddress")
+                  .value("sade.joseph@example.com"));
+    }
+  }
 
-    verify(facade)
-        .findStaffMemberById("0001");
+  @Nested
+  @DisplayName("Find Staff Member By Id")
+  class FindStaffMemberById {
+
+    @Test
+    @DisplayName("A staff member is returned with HTTP 200 when the id exists")
+    void test01() throws Exception {
+
+      // Arrange
+      StaffMemberDTO staffMember = createValidStaffMemberDTO("0001");
+
+      given(facade.findStaffMemberById("0001"))
+          .willReturn(staffMember);
+
+      // Act + Assert
+      mockMvc.perform(
+          get("/staff/{staff_id}", "0001")
+              .accept(MediaType.APPLICATION_JSON))
+          .andExpect(status().isOk())
+          .andExpect(
+              content().contentType(
+                  MediaType.APPLICATION_JSON))
+          .andExpect(jsonPath("$.id").value("0001"))
+          .andExpect(jsonPath("$.firstName").value("Sade"))
+          .andExpect(jsonPath("$.surname").value("Joseph"));
+    }
   }
 }
