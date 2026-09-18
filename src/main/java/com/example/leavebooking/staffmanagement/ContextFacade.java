@@ -19,6 +19,8 @@ public class ContextFacade {
   // Application service used for staff member changes.
   private final StaffMemberApplicationService staffMemberApplicationService;
 
+  private final com.example.leavebooking.leavemanagement.ContextFacade leaveManagementContextFacade;
+
   // Return all staff member details.
   // The façade delegates the actual query work to the query handler.
   @PreAuthorize("hasRole('ADMIN')")
@@ -61,5 +63,26 @@ public class ContextFacade {
         surname,
         email,
         department);
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  public void addStaffMember(
+      String firstName,
+      String surname,
+      String email,
+      String department,
+      String managerId) {
+
+    String staffId = staffMemberApplicationService.addStaffMember(
+        firstName,
+        surname,
+        email,
+        department);
+
+    leaveManagementContextFacade.addLeaveAllowance(
+        staffId,
+        firstName,
+        surname,
+        managerId);
   }
 }

@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest(StaffMemberController.class)
 @DisplayName("StaffMemberController MVC Unit Tests")
@@ -126,6 +127,38 @@ class StaffMemberControllerTests {
       verify(facade).updateDepartment(
           "0001",
           "Finance");
+    }
+  }
+
+  @Nested
+  @DisplayName("Add Staff Member")
+  class AddStaffMember {
+
+    @Test
+    @DisplayName("A new staff member can be added with HTTP 201")
+    void test01() throws Exception {
+
+      // Act + Assert
+      mockMvc.perform(
+          post("/staff")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content("""
+                  {
+                    "firstName": "Becky",
+                    "surname": "Taylor",
+                    "email": "becky.taylor@example.com",
+                    "department": "Engineering",
+                    "managerId": "0003"
+                  }
+                  """))
+          .andExpect(status().isCreated());
+
+      verify(facade).addStaffMember(
+          "Becky",
+          "Taylor",
+          "becky.taylor@example.com",
+          "Engineering",
+          "0003");
     }
   }
 }

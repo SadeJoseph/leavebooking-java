@@ -34,15 +34,15 @@ import com.example.leavebooking.leavemanagement.ui.commands.RejectLeaveRequestCo
 import com.example.leavebooking.leavemanagement.application.exceptions.OverlappingLeaveRequestException;
 import com.example.leavebooking.leavemanagement.domain.LeaveStatus;
 import com.example.leavebooking.leavemanagement.domain.LeaveType;
+import com.example.leavebooking.leavemanagement.infrastructure.entities.LeaveAllowanceJpa;
 import com.example.leavebooking.leavemanagement.infrastructure.entities.LeaveRequestJpa;
-
 
 @ExtendWith(MockitoExtension.class)
 class LeaveApplicationServiceTests {
 
   @Mock
   private LeaveRequestRepository leaveRequestRepository;
-  
+
   @Mock
   private LeaveAllowanceRepository leaveAllowanceRepository;
 
@@ -54,7 +54,7 @@ class LeaveApplicationServiceTests {
   @BeforeEach
   void setUp() {
 
-  leaveApplicationService = new LeaveApplicationService(
+    leaveApplicationService = new LeaveApplicationService(
         leaveRequestRepository,
         leaveAllowanceRepository,
         domainEventManager);
@@ -412,5 +412,34 @@ class LeaveApplicationServiceTests {
 
     // The previous cancelled request should not block the new one.
     verify(leaveRequestRepository).save(any());
+  }
+
+  @Test
+  @DisplayName("A new staff member is given a default leave allowance")
+  void test11() {
+
+    // Arrange
+    ArgumentCaptor<LeaveAllowanceJpa> leaveAllowanceCaptor = ArgumentCaptor.forClass(LeaveAllowanceJpa.class);
+
+    // Act
+    leaveApplicationService.addLeaveAllowance(
+        "0004",
+        "Becky",
+        "Taylor",
+        "0003");
+
+    // Assert
+    verify(leaveAllowanceRepository)
+        .save(leaveAllowanceCaptor.capture());
+
+    LeaveAllowanceJpa savedLeaveAllowance = leaveAllowanceCaptor.getValue();
+
+    assertEquals("0004", savedLeaveAllowance.getStaffId());
+
+    assertEquals("0003", savedLeaveAllowance.getManagerId());
+
+    assertEquals(25, savedLeaveAllowance.getYearlyEntitlement());
+
+    assertEquals(25, savedLeaveAllowance.getRemainingBalance());
   }
 }

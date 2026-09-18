@@ -43,7 +43,7 @@ public class StaffMemberApplicationService {
   }
 
   @Transactional
-  public void addStaffMember(
+  public String addStaffMember(
       String firstName,
       String surname,
       String email,
@@ -53,9 +53,7 @@ public class StaffMemberApplicationService {
 
     StaffMember staffMember = new StaffMember(
         newStaffMemberId,
-        new FullName(
-            firstName,
-            surname),
+        new FullName(firstName, surname),
         new EmailAddress(email),
         department);
 
@@ -66,6 +64,8 @@ public class StaffMemberApplicationService {
     log.info(
         "New staff member {} added by admin",
         newStaffMemberId.id());
+
+    return newStaffMemberId.id();
   }
 
   @Transactional

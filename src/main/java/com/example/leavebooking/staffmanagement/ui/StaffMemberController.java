@@ -61,13 +61,15 @@ public class StaffMemberController {
         request.firstName(),
         request.surname(),
         request.email(),
-        request.department());
+        request.department(),
+        request.managerId());
   }
 
   public record AddStaffMemberRequest(
       String firstName,
       String surname,
       String email,
-      String department) {
+      String department,
+      String managerId) {
   }
 }

@@ -1,5 +1,6 @@
 package com.example.leavebooking.leavemanagement.application;
 
+import com.example.leavebooking.common.domain.FullName;
 import com.example.leavebooking.common.domain.Identity;
 import com.example.leavebooking.common.events.DomainEventManager;
 
@@ -191,6 +192,29 @@ public class LeaveApplicationService {
     // recalculates the remaining balance.
     leaveAllowance.amendYearlyEntitlement(
         newEntitlement);
+
+    leaveAllowanceRepository.save(
+        LeaveAllowanceDomainToJpaMapper.map(
+            leaveAllowance));
+  }
+
+  private static final int DEFAULT_YEARLY_ENTITLEMENT = 25;
+
+  @Transactional
+  public void addLeaveAllowance(
+      String staffId,
+      String firstName,
+      String surname,
+      String managerId) {
+
+    Identity<LeaveAllowance> leaveAllowanceId = Identity.generateId();
+
+    LeaveAllowance leaveAllowance = new LeaveAllowance(
+        leaveAllowanceId,
+        staffId,
+        new FullName(firstName, surname),
+        managerId,
+        DEFAULT_YEARLY_ENTITLEMENT);
 
     leaveAllowanceRepository.save(
         LeaveAllowanceDomainToJpaMapper.map(
