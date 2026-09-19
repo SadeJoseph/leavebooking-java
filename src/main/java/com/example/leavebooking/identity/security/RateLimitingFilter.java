@@ -47,7 +47,6 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     Instant now = Instant.now();
 
     // clientAddressompute() updates the entry atomically for this client, preventing concurrent requests from corrupting the count.
-
     RequestWindow requestWindow = requestWindows.compute(
         clientAddress,
         (key, currentWindow) -> {

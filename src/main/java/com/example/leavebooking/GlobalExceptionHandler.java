@@ -48,19 +48,16 @@ public class GlobalExceptionHandler {
       message = rse.getReason();
     }
 
-    // Authenticated user tried to access something their role
-    // does not permit.
+    // Authenticated user tried to access something their role does not permit.
     else if (ex instanceof AccessDeniedException) {
 
       status = HttpStatus.FORBIDDEN;
       message = "Access denied";
-
       // unauthorised access attempts to be logged.
       log.warn(
           "Unauthorised access attempt: {}",
           ex.getMessage());
     }
-
     // Handle validation errors from incoming request objects.
     else if (ex instanceof MethodArgumentNotValidException manve) {
 
@@ -77,8 +74,7 @@ public class GlobalExceptionHandler {
                   error -> Objects.requireNonNullElse(
                       error.getDefaultMessage(),
                       "Invalid value"),
-                  // If two errors exist for the same
-                  // field keep the first one.
+                  // If two errors exist for the same ,field keep the first one.
                   (existing, replacement) -> existing));
     }
 
